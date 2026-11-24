@@ -11,7 +11,6 @@ namespace NornavindCinema.ViewModels {
         public string? Year { get; set; }
         public string? Rated { get; set; }
 
-        [Required]
         [DataType(DataType.Date)]
         public DateOnly? Released { get; set; }
 
@@ -49,7 +48,7 @@ namespace NornavindCinema.ViewModels {
             movie.Title = Title;
             movie.Year = Year;
             movie.Rated = Rated;
-            movie.Released = Released!.Value;
+            movie.Released = Released;
             movie.Runtime = Runtime;
             movie.Genres = ParseLines(Genres);
             movie.Director = Director;

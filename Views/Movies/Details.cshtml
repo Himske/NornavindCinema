@@ -15,7 +15,7 @@
 <dl class="row">
     <dt class="col-sm-3">Year</dt><dd class="col-sm-9">@Model.Year</dd>
     <dt class="col-sm-3">Rated</dt><dd class="col-sm-9">@Model.Rated</dd>
-    <dt class="col-sm-3">Released</dt><dd class="col-sm-9">@Model.Released.ToString("d")</dd>
+    <dt class="col-sm-3">Released</dt><dd class="col-sm-9">@(Model.Released?.ToString("d") ?? "N/A")</dd>
     <dt class="col-sm-3">Runtime</dt><dd class="col-sm-9">@Model.Runtime</dd>
     <dt class="col-sm-3">Genres</dt><dd class="col-sm-9">@string.Join(", ", Model.Genres)</dd>
     <dt class="col-sm-3">Director</dt><dd class="col-sm-9">@Model.Director</dd>

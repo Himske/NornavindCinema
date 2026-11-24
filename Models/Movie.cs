@@ -4,7 +4,7 @@ namespace NornavindCinema.Models {
         public string? Title { get; set; }
         public string? Year { get; set; }
         public string? Rated { get; set; }
-        public DateOnly Released { get; set; }
+        public DateOnly? Released { get; set; }
         public string? Runtime { get; set; }
         public List<string> Genres { get; set; } = [];
         public string? Director { get; set; }

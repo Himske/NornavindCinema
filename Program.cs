@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NornavindCinema.Data;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +11,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddAuthorization(options => options.AddPolicy("Administrator", policy =>
+    policy.RequireAuthenticatedUser().RequireAssertion(context => {
+        var adminUserId = builder.Configuration["Admin:UserId"];
+        return !string.IsNullOrWhiteSpace(adminUserId)
+            && context.User.HasClaim(ClaimTypes.NameIdentifier, adminUserId);
+    })));
+builder.Services.AddScoped<MovieSeeder>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

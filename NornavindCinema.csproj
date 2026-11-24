@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <None Include=".github\copilot-instructions.md" />
+    <Content Update="Data\omdb_responses.json" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

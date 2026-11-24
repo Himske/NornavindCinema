@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "Administration";
+}
+
+<section class="movie-management">
+    <div class="movie-management__header">
+        <div>
+            <h1>Administration</h1>
+            <p>Manage application data.</p>
+        </div>
+    </div>
+
+    @if (TempData["SeedResult"] is string message) {
+        <div class="alert alert-success mt-3" role="status">@message</div>
+    }
+
+    <div class="pt-3">
+        <h2 class="h5">Seed movie data</h2>
+        <p>Import the bundled OMDB movie data. Movies with an IMDb ID already in the database are skipped; existing movies are not changed.</p>
+        <form asp-action="SeedMovies" method="post">
+            <button type="submit" class="btn btn-primary">Seed movies</button>
+        </form>
+    </div>
+</section>

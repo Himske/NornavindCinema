@@ -279,7 +279,7 @@ namespace NornavindCinema.Data.Migrations
                     b.Property<string>("Rated")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("Released")
+                    b.Property<DateOnly?>("Released")
                         .HasColumnType("date");
 
                     b.Property<string>("Runtime")
