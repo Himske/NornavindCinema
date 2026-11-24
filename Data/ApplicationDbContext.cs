@@ -5,6 +5,7 @@ using NornavindCinema.Models;
 namespace NornavindCinema.Data {
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options) {
         public DbSet<Movie> Movies => Set<Movie>();
+        public DbSet<ApiCredential> ApiCredentials => Set<ApiCredential>();
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);

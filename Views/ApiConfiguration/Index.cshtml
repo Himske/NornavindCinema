@@ -1,0 +1,63 @@
+@model NornavindCinema.ViewModels.ApiConfigurationViewModel
+
+@{
+    ViewData["Title"] = "API configuration";
+}
+
+<section class="movie-management">
+    <div class="movie-management__header">
+        <div>
+            <h1>API configuration</h1>
+            <p>Manage OMDB and TMDB credentials.</p>
+        </div>
+    </div>
+
+    @if (TempData["ConfigurationSaved"] is string message) {
+        <div class="alert alert-success mt-3" role="status">@message</div>
+    }
+
+    <form asp-action="Index" method="post" class="pt-3" autocomplete="off">
+        <p>Leave a field blank to keep its current value. Saved values are never displayed.</p>
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+        <div class="mb-4">
+            <label asp-for="OmdbApiKey" class="form-label"></label>
+            <div class="form-text mb-1">@(Model.HasOmdbApiKey ? "Configured" : "Not configured")</div>
+            <input asp-for="OmdbApiKey" type="password" value="" class="form-control" autocomplete="new-password" />
+            <span asp-validation-for="OmdbApiKey" class="text-danger"></span>
+            <div class="form-check mt-2">
+                <input asp-for="ClearOmdbApiKey" class="form-check-input" />
+                <label asp-for="ClearOmdbApiKey" class="form-check-label">Remove saved OMDB API key</label>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="TmdbApiKey" class="form-label"></label>
+            <div class="form-text mb-1">@(Model.HasTmdbApiKey ? "Configured" : "Not configured")</div>
+            <input asp-for="TmdbApiKey" type="password" value="" class="form-control" autocomplete="new-password" />
+            <span asp-validation-for="TmdbApiKey" class="text-danger"></span>
+            <div class="form-check mt-2">
+                <input asp-for="ClearTmdbApiKey" class="form-check-input" />
+                <label asp-for="ClearTmdbApiKey" class="form-check-label">Remove saved TMDB API key</label>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="TmdbReadAccessToken" class="form-label"></label>
+            <div class="form-text mb-1">@(Model.HasTmdbReadAccessToken ? "Configured" : "Not configured")</div>
+            <input asp-for="TmdbReadAccessToken" type="password" value="" class="form-control" autocomplete="new-password" />
+            <span asp-validation-for="TmdbReadAccessToken" class="text-danger"></span>
+            <div class="form-check mt-2">
+                <input asp-for="ClearTmdbReadAccessToken" class="form-check-input" />
+                <label asp-for="ClearTmdbReadAccessToken" class="form-check-label">Remove saved TMDB read access token</label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save configuration</button>
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-secondary">Back to administration</a>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
