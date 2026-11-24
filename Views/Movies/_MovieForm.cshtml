@@ -1,0 +1,107 @@
+@model NornavindCinema.ViewModels.MovieFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="mb-3">
+    <label asp-for="Title" class="form-label"></label>
+    <input asp-for="Title" class="form-control" />
+    <span asp-validation-for="Title" class="text-danger"></span>
+</div>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label asp-for="Year" class="form-label"></label>
+        <input asp-for="Year" class="form-control" />
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="Rated" class="form-label"></label>
+        <input asp-for="Rated" class="form-control" />
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="Released" class="form-label"></label>
+        <input asp-for="Released" type="date" class="form-control" />
+        <span asp-validation-for="Released" class="text-danger"></span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Runtime" class="form-label"></label>
+        <input asp-for="Runtime" class="form-control" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Genres" class="form-label">Genres</label>
+        <textarea asp-for="Genres" class="form-control" rows="2" aria-describedby="genres-help"></textarea>
+        <div id="genres-help" class="form-text">Enter one genre per line.</div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Director" class="form-label"></label>
+        <input asp-for="Director" class="form-control" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Writer" class="form-label"></label>
+        <input asp-for="Writer" class="form-control" />
+    </div>
+</div>
+<div class="mb-3">
+    <label asp-for="Actors" class="form-label"></label>
+    <textarea asp-for="Actors" class="form-control" rows="3" aria-describedby="actors-help"></textarea>
+    <div id="actors-help" class="form-text">Enter one actor per line.</div>
+</div>
+<div class="mb-3">
+    <label asp-for="Plot" class="form-label"></label>
+    <textarea asp-for="Plot" class="form-control" rows="3"></textarea>
+</div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Language" class="form-label"></label>
+        <input asp-for="Language" class="form-control" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Country" class="form-label"></label>
+        <input asp-for="Country" class="form-control" />
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Awards" class="form-label"></label>
+        <input asp-for="Awards" class="form-control" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Poster" class="form-label"></label>
+        <input asp-for="Poster" class="form-control" type="url" />
+    </div>
+</div>
+<div class="mb-3">
+    <label asp-for="Ratings" class="form-label"></label>
+    <textarea asp-for="Ratings" class="form-control" rows="3" aria-describedby="ratings-help"></textarea>
+    <div id="ratings-help" class="form-text">Enter one rating per line as Source | Value.</div>
+    <span asp-validation-for="Ratings" class="text-danger"></span>
+</div>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label asp-for="Metascore" class="form-label"></label>
+        <input asp-for="Metascore" class="form-control" />
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="ImdbRating" class="form-label">IMDb rating</label>
+        <input asp-for="ImdbRating" class="form-control" />
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="ImdbVotes" class="form-label">IMDb votes</label>
+        <input asp-for="ImdbVotes" class="form-control" />
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label asp-for="ImdbId" class="form-label">IMDb ID</label>
+        <input asp-for="ImdbId" class="form-control" />
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="BoxOffice" class="form-label"></label>
+        <input asp-for="BoxOffice" class="form-control" />
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="Production" class="form-label"></label>
+        <input asp-for="Production" class="form-control" />
+    </div>
+</div>

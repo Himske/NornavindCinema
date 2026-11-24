@@ -1,0 +1,42 @@
+@model NornavindCinema.Models.Movie
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@Model.Title</h1>
+<div class="mb-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to movies</a>
+</div>
+@if (!string.IsNullOrWhiteSpace(Model.Poster)) {
+    <p><img src="@Model.Poster" alt="Poster for @Model.Title" class="img-fluid" style="max-height: 360px" /></p>
+}
+<dl class="row">
+    <dt class="col-sm-3">Year</dt><dd class="col-sm-9">@Model.Year</dd>
+    <dt class="col-sm-3">Rated</dt><dd class="col-sm-9">@Model.Rated</dd>
+    <dt class="col-sm-3">Released</dt><dd class="col-sm-9">@Model.Released.ToString("d")</dd>
+    <dt class="col-sm-3">Runtime</dt><dd class="col-sm-9">@Model.Runtime</dd>
+    <dt class="col-sm-3">Genres</dt><dd class="col-sm-9">@string.Join(", ", Model.Genres)</dd>
+    <dt class="col-sm-3">Director</dt><dd class="col-sm-9">@Model.Director</dd>
+    <dt class="col-sm-3">Writer</dt><dd class="col-sm-9">@Model.Writer</dd>
+    <dt class="col-sm-3">Actors</dt><dd class="col-sm-9">@string.Join(", ", Model.Actors)</dd>
+    <dt class="col-sm-3">Plot</dt><dd class="col-sm-9">@Model.Plot</dd>
+    <dt class="col-sm-3">Language</dt><dd class="col-sm-9">@Model.Language</dd>
+    <dt class="col-sm-3">Country</dt><dd class="col-sm-9">@Model.Country</dd>
+    <dt class="col-sm-3">Awards</dt><dd class="col-sm-9">@Model.Awards</dd>
+    <dt class="col-sm-3">Metascore</dt><dd class="col-sm-9">@Model.Metascore</dd>
+    <dt class="col-sm-3">IMDb rating</dt><dd class="col-sm-9">@Model.ImdbRating</dd>
+    <dt class="col-sm-3">IMDb votes</dt><dd class="col-sm-9">@Model.ImdbVotes</dd>
+    <dt class="col-sm-3">IMDb ID</dt><dd class="col-sm-9">@Model.ImdbId</dd>
+    <dt class="col-sm-3">Box office</dt><dd class="col-sm-9">@Model.BoxOffice</dd>
+    <dt class="col-sm-3">Production</dt><dd class="col-sm-9">@Model.Production</dd>
+</dl>
+@if (Model.Ratings.Count > 0) {
+    <h2>Ratings</h2>
+    <ul>
+        @foreach (var rating in Model.Ratings) {
+            <li>@rating.Source: @rating.Value</li>
+        }
+    </ul>
+}
