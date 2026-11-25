@@ -72,6 +72,10 @@
     </div>
 </div>
 <div class="mb-3">
+    <label asp-for="Backdrop" class="form-label"></label>
+    <input asp-for="Backdrop" class="form-control" type="url" />
+</div>
+<div class="mb-3">
     <label asp-for="Ratings" class="form-label"></label>
     <textarea asp-for="Ratings" class="form-control" rows="3" aria-describedby="ratings-help"></textarea>
     <div id="ratings-help" class="form-text">Enter one rating per line as Source | Value.</div>

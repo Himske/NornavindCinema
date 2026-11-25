@@ -24,6 +24,7 @@ namespace NornavindCinema.ViewModels {
         public string? Country { get; set; }
         public string? Awards { get; set; }
         public string? Poster { get; set; }
+        public string? Backdrop { get; set; }
         public string Ratings { get; set; } = string.Empty;
         public string? Metascore { get; set; }
         public string? ImdbRating { get; set; }
@@ -59,6 +60,7 @@ namespace NornavindCinema.ViewModels {
             movie.Country = Country;
             movie.Awards = Awards;
             movie.Poster = Poster;
+            movie.Backdrop = Backdrop;
             movie.Ratings = Ratings.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                 .Select(line => line.Split('|', 2, StringSplitOptions.TrimEntries))
                 .Select(parts => new MovieRating { Source = parts[0], Value = parts[1] })
@@ -87,6 +89,7 @@ namespace NornavindCinema.ViewModels {
             Country = movie.Country,
             Awards = movie.Awards,
             Poster = movie.Poster,
+            Backdrop = movie.Backdrop,
             Ratings = string.Join(Environment.NewLine, movie.Ratings.Select(rating => $"{rating.Source} | {rating.Value}")),
             Metascore = movie.Metascore,
             ImdbRating = movie.ImdbRating,

@@ -254,6 +254,9 @@ namespace NornavindCinema.Data.Migrations
                     b.Property<string>("Awards")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Backdrop")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("BoxOffice")
                         .HasColumnType("nvarchar(max)");
 
