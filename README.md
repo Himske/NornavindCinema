@@ -4,7 +4,7 @@
 
 Configure `ConnectionStrings:DefaultConnection` for SQL Server and apply the EF Core migrations with `dotnet ef database update` before using the application. The database must be backed up as appropriate before applying migrations or importing data.
 
-The migrations add the Identity roles `Guest`, `Member`, and `Admin` if they do not already exist. No roles are assigned automatically. Rolling back the role migration leaves the roles and any user assignments in place.
+The migrations add the Identity roles `Guest`, `Member`, and `Admin` if they do not already exist. New accounts are assigned `Member` when their email is first confirmed; existing confirmed accounts are not automatically changed. Confirmation and role assignment succeed together, so if the `Member` role is missing, restore the role and retry the confirmation link. `Guest` and `Admin` are not assigned automatically. Rolling back the role migration leaves the roles and any user assignments in place.
 
 The Administration page imports the bundled `Data/omdb_responses.json` file. It adds movies that are not already present by IMDb ID and does not overwrite existing records. Repeated imports skip previously imported movies. Release dates marked `N/A` are stored as unknown.
 
