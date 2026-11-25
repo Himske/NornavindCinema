@@ -1,8 +1,93 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model NornavindCinema.ViewModels.HomeViewModel
+@{
+	ViewData["Title"] = "Home";
+	ViewData["Cinema"] = true;
+
+	var tabs = new[] {
+		(Key: "popular", Label: "Popular", Items: Model.Popular),
+		(Key: "premieres", Label: "Premieres", Items: Model.Premieres),
+		(Key: "recent", Label: "Recently Added", Items: Model.RecentlyAdded)
+	};
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (Model.Hero.Count == 0) {
+	<section class="cinema-empty">
+		<h1>No movies yet</h1>
+		<p>Add movies from the Movies page or seed the database from the admin page.</p>
+		<a class="btn btn-danger" asp-controller="Movies" asp-action="Index">Go to Movies</a>
+	</section>
+}
+else {
+	<section class="cinema-hero" data-hero>
+		@for (var i = 0; i < Model.Hero.Count; i++) {
+			var movie = Model.Hero[i];
+			<article class="cinema-hero__slide @(i == 0 ? "is-active" : null)" data-hero-slide data-movie-id="@movie.Id">
+				<img class="cinema-hero__image" src="@movie.Backdrop" alt="" />
+				<div class="cinema-hero__shade"></div>
+				<div class="cinema-hero__content">
+					<div class="cinema-hero__meta">
+						@if (movie.Runtime is not null) {
+							<span>Duration: @movie.Runtime</span>
+						}
+						@if (movie.Rating is not null) {
+							<span class="cinema-hero__rating"><i class="cinema-star">&#9733;</i> @movie.Rating</span>
+						}
+					</div>
+					<p class="cinema-hero__sub">@string.Join(" · ", movie.Genres.Take(3).Prepend(movie.Year ?? "").Where(s => s.Length > 0))</p>
+					<h1 class="cinema-hero__title">@movie.Title</h1>
+					<p class="cinema-hero__plot">@movie.Plot</p>
+					<div class="cinema-hero__actions">
+						<a class="cinema-btn cinema-btn--watch" asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id">
+							<span class="cinema-btn__icon">&#9654;</span> WATCH
+						</a>
+						<button type="button" class="cinema-btn cinema-btn--list" data-add-list="@movie.Id">+ ADD LIST</button>
+					</div>
+				</div>
+			</article>
+		}
+		<div class="cinema-hero__dots">
+			@for (var i = 0; i < Model.Hero.Count; i++) {
+				<button type="button" class="cinema-hero__dot @(i == 0 ? "is-active" : null)" data-hero-dot="@i" aria-label="Show slide @(i + 1)"></button>
+			}
+		</div>
+	</section>
+
+	<section class="cinema-trends" data-trends>
+		<div class="cinema-trends__header">
+			<h2 class="cinema-trends__title"><span class="cinema-trends__icon">&#8599;</span> Trends Now</h2>
+			<div class="cinema-tabs" role="tablist">
+				@foreach (var tab in tabs.Select((t, idx) => (t, idx))) {
+					<button type="button" role="tab" class="cinema-tab @(tab.idx == 0 ? "is-active" : null)" data-tab="@tab.t.Key">@tab.t.Label</button>
+				}
+			</div>
+		</div>
+
+		<div class="cinema-chips">
+			<button type="button" class="cinema-chip is-active" data-genre="">All</button>
+			@foreach (var genre in Model.Genres) {
+				<button type="button" class="cinema-chip" data-genre="@genre">@genre</button>
+			}
+		</div>
+
+		@foreach (var tab in tabs.Select((t, idx) => (t, idx))) {
+			<div class="cinema-carousel" data-panel="@tab.t.Key" hidden="@(tab.idx != 0)">
+				<button type="button" class="cinema-carousel__arrow cinema-carousel__arrow--prev" data-scroll="-1" aria-label="Scroll left">&#10094;</button>
+				<div class="cinema-carousel__track" data-track>
+					@foreach (var movie in tab.t.Items) {
+						<a class="cinema-card" asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id"
+						   data-genres="@string.Join("|", movie.Genres)" title="@movie.Title">
+							<img src="@movie.Poster" alt="@movie.Title" loading="lazy" />
+							<span class="cinema-card__title">@movie.Title</span>
+						</a>
+					}
+				</div>
+				<button type="button" class="cinema-carousel__arrow cinema-carousel__arrow--next" data-scroll="1" aria-label="Scroll right">&#10095;</button>
+				<p class="cinema-carousel__empty" hidden>No movies in this genre.</p>
+			</div>
+		}
+	</section>
+}
+
+@section Scripts {
+	<script src="~/js/home.js" asp-append-version="true"></script>
+}
