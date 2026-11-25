@@ -17,8 +17,9 @@
     @if (cinema) {
         <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
     }
+    @await RenderSectionAsync("Styles", required: false)
 </head>
-<body class="@(cinema ? "cinema-body" : null)">
+<body class="@(cinema ? "cinema-body" : null) @ViewData["BodyClass"]">
     <header class="@(cinema ? "cinema-header" : null)">
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm @(cinema ? "navbar-dark cinema-nav" : "navbar-light bg-white border-bottom box-shadow mb-3")">
             <div class="container-fluid">

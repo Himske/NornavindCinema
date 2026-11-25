@@ -2,44 +2,82 @@
 
 @{
     ViewData["Title"] = Model.Title;
+    ViewData["Cinema"] = true;
+    ViewData["BodyClass"] = "cinema-body--details";
+
+    string Display(string? value) => string.IsNullOrWhiteSpace(value) || value.Trim().Equals("N/A", StringComparison.OrdinalIgnoreCase) ? "N/A" : value;
+    var genres = Model.Genres.Count > 0 ? string.Join(", ", Model.Genres) : "N/A";
+    var actors = Model.Actors.Count > 0 ? string.Join(", ", Model.Actors) : "N/A";
+    var hasPoster = Display(Model.Poster) != "N/A";
+    var hasBackdrop = Display(Model.Backdrop) != "N/A";
 }
 
-<h1>@Model.Title</h1>
-<div class="mb-3">
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
-    <a asp-action="Index" class="btn btn-secondary">Back to movies</a>
+@section Styles {
+    <link rel="stylesheet" href="~/css/movie-details.css" asp-append-version="true" />
+}
+
+<div class="movie-details">
+    <section class="movie-details__hero" aria-labelledby="movie-title">
+        <div class="movie-details__poster">
+            @if (hasPoster) {
+                <img src="@Model.Poster" alt="Poster for @Model.Title" />
+            }
+            else {
+                <span>Poster unavailable</span>
+            }
+        </div>
+        <div class="movie-details__summary">
+            <h1 id="movie-title">@Display(Model.Title)</h1>
+            <div class="movie-details__meta">
+                <span><span class="movie-details__star" aria-hidden="true">&#9733;</span> IMDb @Display(Model.ImdbRating) / 10</span>
+                <span>@Display(Model.Year)</span>
+                <span>@genres</span>
+                <span>@Display(Model.Runtime)</span>
+            </div>
+            <p class="movie-details__plot">@Display(Model.Plot)</p>
+            <div class="movie-details__actions">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="movie-details__button movie-details__button--primary">Edit movie</a>
+                <a asp-action="Index" class="movie-details__button movie-details__button--secondary">Back to movies</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="movie-details__panels">
+        <section class="movie-details__panel" aria-labelledby="overview-title">
+            <h2 id="overview-title" class="movie-details__panel-heading">Overview</h2>
+            <dl class="movie-details__facts">
+                <div><dt>Director</dt><dd>@Display(Model.Director)</dd></div>
+                <div><dt>Writers</dt><dd>@Display(Model.Writer)</dd></div>
+                <div><dt>Stars</dt><dd>@actors</dd></div>
+                <div><dt>Release date</dt><dd>@(Model.Released?.ToString("D") ?? "N/A")</dd></div>
+                <div><dt>Language</dt><dd>@Display(Model.Language)</dd></div>
+                <div><dt>Box office</dt><dd>@Display(Model.BoxOffice)</dd></div>
+                <div><dt>Rated</dt><dd>@Display(Model.Rated)</dd></div>
+                <div><dt>Country</dt><dd>@Display(Model.Country)</dd></div>
+                <div><dt>Awards</dt><dd>@Display(Model.Awards)</dd></div>
+                <div><dt>Production</dt><dd>@Display(Model.Production)</dd></div>
+                <div><dt>Metascore</dt><dd>@Display(Model.Metascore)</dd></div>
+                <div><dt>IMDb ID</dt><dd>@Display(Model.ImdbId)</dd></div>
+            </dl>
+        </section>
+
+        <aside class="movie-details__panel movie-details__ratings" aria-labelledby="ratings-title">
+            <h2 id="ratings-title">Ratings</h2>
+            <p class="movie-details__score"><span class="movie-details__star" aria-hidden="true">&#9733;</span> @Display(Model.ImdbRating) <span>/ 10</span></p>
+            <p class="movie-details__votes">IMDb votes: @Display(Model.ImdbVotes)</p>
+            @if (Model.Ratings.Count > 0) {
+                <dl class="movie-details__rating-list">
+                    @foreach (var rating in Model.Ratings) {
+                        <div><dt>@Display(rating.Source)</dt><dd>@Display(rating.Value)</dd></div>
+                    }
+                </dl>
+            }
+        </aside>
+    </div>
+    @if (hasBackdrop) {
+        <section class="movie-details__backdrop" aria-labelledby="backdrop-title">
+            <h2 id="backdrop-title">Backdrop</h2>
+            <img src="@Model.Backdrop" alt="Backdrop for @Model.Title" />
+        </section>
+    }
 </div>
-@if (!string.IsNullOrWhiteSpace(Model.Poster)) {
-    <p><img src="@Model.Poster" alt="Poster for @Model.Title" class="img-fluid" style="max-height: 360px" /></p>
-}
-@if (!string.IsNullOrWhiteSpace(Model.Backdrop)) {
-    <p><img src="@Model.Backdrop" alt="Backdrop for @Model.Title" class="img-fluid" style="max-height: 360px" /></p>
-}
-<dl class="row">
-    <dt class="col-sm-3">Year</dt><dd class="col-sm-9">@Model.Year</dd>
-    <dt class="col-sm-3">Rated</dt><dd class="col-sm-9">@Model.Rated</dd>
-    <dt class="col-sm-3">Released</dt><dd class="col-sm-9">@(Model.Released?.ToString("d") ?? "N/A")</dd>
-    <dt class="col-sm-3">Runtime</dt><dd class="col-sm-9">@Model.Runtime</dd>
-    <dt class="col-sm-3">Genres</dt><dd class="col-sm-9">@string.Join(", ", Model.Genres)</dd>
-    <dt class="col-sm-3">Director</dt><dd class="col-sm-9">@Model.Director</dd>
-    <dt class="col-sm-3">Writer</dt><dd class="col-sm-9">@Model.Writer</dd>
-    <dt class="col-sm-3">Actors</dt><dd class="col-sm-9">@string.Join(", ", Model.Actors)</dd>
-    <dt class="col-sm-3">Plot</dt><dd class="col-sm-9">@Model.Plot</dd>
-    <dt class="col-sm-3">Language</dt><dd class="col-sm-9">@Model.Language</dd>
-    <dt class="col-sm-3">Country</dt><dd class="col-sm-9">@Model.Country</dd>
-    <dt class="col-sm-3">Awards</dt><dd class="col-sm-9">@Model.Awards</dd>
-    <dt class="col-sm-3">Metascore</dt><dd class="col-sm-9">@Model.Metascore</dd>
-    <dt class="col-sm-3">IMDb rating</dt><dd class="col-sm-9">@Model.ImdbRating</dd>
-    <dt class="col-sm-3">IMDb votes</dt><dd class="col-sm-9">@Model.ImdbVotes</dd>
-    <dt class="col-sm-3">IMDb ID</dt><dd class="col-sm-9">@Model.ImdbId</dd>
-    <dt class="col-sm-3">Box office</dt><dd class="col-sm-9">@Model.BoxOffice</dd>
-    <dt class="col-sm-3">Production</dt><dd class="col-sm-9">@Model.Production</dd>
-</dl>
-@if (Model.Ratings.Count > 0) {
-    <h2>Ratings</h2>
-    <ul>
-        @foreach (var rating in Model.Ratings) {
-            <li>@rating.Source: @rating.Value</li>
-        }
-    </ul>
-}

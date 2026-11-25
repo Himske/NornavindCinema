@@ -1,0 +1,242 @@
+.cinema-body--details .cinema-header {
+  position: relative;
+}
+
+.cinema-body--details .cinema-nav .nav-link[href="/"]::after {
+  display: none;
+}
+
+.movie-details {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 2rem 4rem;
+}
+
+.movie-details__hero {
+  display: grid;
+  grid-template-columns: minmax(180px, 300px) minmax(0, 1fr);
+  gap: 2.75rem;
+  align-items: start;
+  margin-bottom: 2rem;
+}
+
+.movie-details__poster {
+  aspect-ratio: 2 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0.6rem;
+  background: #24242b;
+  color: #a9a9b3;
+  text-align: center;
+}
+
+.movie-details__poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.movie-details__summary {
+  padding-top: 0.5rem;
+}
+
+.movie-details__summary h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.movie-details__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0;
+  color: #cfcfd6;
+}
+
+.movie-details__meta > span {
+  padding: 0 0.9rem;
+  border-left: 1px solid #44444d;
+}
+
+.movie-details__meta > span:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.movie-details__star {
+  color: #f5c518;
+}
+
+.movie-details__plot {
+  max-width: 42rem;
+  margin: 2rem 0;
+  color: #cfcfd6;
+  line-height: 1.7;
+}
+
+.movie-details__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.movie-details__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: 0.4rem;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.movie-details__button--primary {
+  background: #e50914;
+}
+
+.movie-details__button--primary:hover {
+  color: #fff;
+  background: #f6121d;
+}
+
+.movie-details__button--secondary {
+  border-color: #44444d;
+  background: #24242b;
+}
+
+.movie-details__button--secondary:hover {
+  color: #fff;
+  background: #33333c;
+}
+
+.movie-details__panels {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(250px, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.movie-details__panel {
+  min-width: 0;
+  border: 1px solid #303038;
+  border-radius: 0.6rem;
+  background: #18181e;
+}
+
+.movie-details__panel-heading {
+  margin: 0;
+  padding: 1.2rem 1.5rem;
+  border-bottom: 2px solid #e50914;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.movie-details__facts {
+  margin: 0;
+  padding: 0.25rem 1.5rem 1rem;
+}
+
+.movie-details__facts > div,
+.movie-details__rating-list > div {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(0, 3fr);
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #303038;
+}
+
+.movie-details__facts > div:last-child,
+.movie-details__rating-list > div:last-child {
+  border-bottom: 0;
+}
+
+.movie-details__facts dt,
+.movie-details__rating-list dt {
+  color: #f0f0f2;
+  font-weight: 600;
+}
+
+.movie-details__facts dd,
+.movie-details__rating-list dd {
+  margin: 0;
+  color: #cfcfd6;
+  overflow-wrap: anywhere;
+}
+
+.movie-details__ratings {
+  padding: 1.5rem;
+}
+
+.movie-details__ratings h2,
+.movie-details__backdrop h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.movie-details__score {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.movie-details__score > span:last-child {
+  color: #a9a9b3;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.movie-details__votes {
+  margin: 0.5rem 0 1rem;
+  color: #a9a9b3;
+}
+
+.movie-details__rating-list {
+  margin: 0;
+}
+
+.movie-details__rating-list > div {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.movie-details__backdrop {
+  margin-top: 2rem;
+}
+
+.movie-details__backdrop img {
+  display: block;
+  max-width: 100%;
+  max-height: 360px;
+  border-radius: 0.6rem;
+  object-fit: contain;
+}
+
+@media (max-width: 767px) {
+  .movie-details {
+    padding: 1.5rem 1.25rem 3rem;
+  }
+
+  .movie-details__hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .movie-details__poster {
+    width: min(100%, 300px);
+  }
+
+  .movie-details__panels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .movie-details__facts > div {
+    grid-template-columns: minmax(90px, 1fr) minmax(0, 2fr);
+  }
+}
