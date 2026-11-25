@@ -1,13 +1,22 @@
 @model NornavindCinema.Models.Movie
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = "Delete movie";
+    var isAdministrator = (await AuthorizationService.AuthorizeAsync(User, "Administrator")).Succeeded;
 }
 
 <h1>Delete movie</h1>
-<p>Are you sure you want to delete <strong>@Model.Title</strong>?</p>
-<form asp-action="Delete" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
-    <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+@if (isAdministrator) {
+    <p>Are you sure you want to delete <strong>@Model.Title</strong>?</p>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+}
+else {
+    <p>Deletion controls are only available to administrators.</p>
+    <a asp-action="Index" class="btn btn-secondary">Back to movies</a>
+}

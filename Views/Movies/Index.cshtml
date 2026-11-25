@@ -1,7 +1,10 @@
 @model IEnumerable<NornavindCinema.Models.Movie>
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = "Manage Movies";
+    var isAdministrator = (await AuthorizationService.AuthorizeAsync(User, "Administrator")).Succeeded;
     var movies = Model.ToList();
     var genres = movies.SelectMany(movie => movie.Genres)
         .Where(genre => !string.IsNullOrWhiteSpace(genre))
@@ -15,9 +18,11 @@
             <h1>Manage Movies</h1>
             <p>View, search and manage all movies in the system.</p>
         </div>
-        <a asp-action="Create" class="btn btn-primary movie-add-button">
-            <span aria-hidden="true">+</span> Add New Movie
-        </a>
+        @if (isAdministrator) {
+            <a asp-action="Create" class="btn btn-primary movie-add-button">
+                <span aria-hidden="true">+</span> Add New Movie
+            </a>
+        }
     </div>
 
     <div class="movie-toolbar">
@@ -85,15 +90,19 @@
                         <td>@(movie.Released?.ToString("yyyy-MM-dd") ?? "N/A")</td>
                         <td>
                             <div class="movie-actions">
-                                <a asp-action="Edit" asp-route-id="@movie.Id" class="btn btn-primary btn-sm">
-                                    <span aria-hidden="true">✎</span> Edit
-                                </a>
+                                @if (isAdministrator) {
+                                    <a asp-action="Edit" asp-route-id="@movie.Id" class="btn btn-primary btn-sm">
+                                        <span aria-hidden="true">✎</span> Edit
+                                    </a>
+                                }
                                 <a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-outline-secondary btn-sm">
                                     <span aria-hidden="true">◉</span> Details
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@movie.Id" class="btn btn-danger btn-sm">
-                                    <span aria-hidden="true">▣</span> Delete
-                                </a>
+                                @if (isAdministrator) {
+                                    <a asp-action="Delete" asp-route-id="@movie.Id" class="btn btn-danger btn-sm">
+                                        <span aria-hidden="true">▣</span> Delete
+                                    </a>
+                                }
                             </div>
                         </td>
                     </tr>

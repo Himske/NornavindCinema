@@ -1,9 +1,12 @@
 @model NornavindCinema.Models.Movie
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = Model.Title;
     ViewData["Cinema"] = true;
     ViewData["BodyClass"] = "cinema-body--details";
+    var isAdministrator = (await AuthorizationService.AuthorizeAsync(User, "Administrator")).Succeeded;
 
     string Display(string? value) => string.IsNullOrWhiteSpace(value) || value.Trim().Equals("N/A", StringComparison.OrdinalIgnoreCase) ? "N/A" : value;
     var genres = Model.Genres.Count > 0 ? string.Join(", ", Model.Genres) : "N/A";
@@ -36,7 +39,9 @@
             </div>
             <p class="movie-details__plot">@Display(Model.Plot)</p>
             <div class="movie-details__actions">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="movie-details__button movie-details__button--primary">Edit movie</a>
+                @if (isAdministrator) {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="movie-details__button movie-details__button--primary">Edit movie</a>
+                }
                 <a asp-action="Index" class="movie-details__button movie-details__button--secondary">Back to movies</a>
             </div>
         </div>

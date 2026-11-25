@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NornavindCinema.Data;
@@ -25,8 +26,10 @@ namespace NornavindCinema.Controllers {
             return movie is null ? NotFound() : View(movie);
         }
 
+        [Authorize(Policy = "Administrator")]
         public IActionResult Create() => View(new MovieFormViewModel());
 
+        [Authorize(Policy = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MovieFormViewModel form) {
@@ -41,6 +44,7 @@ namespace NornavindCinema.Controllers {
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = "Administrator")]
         public async Task<IActionResult> Edit(int? id) {
             if (id is null) {
                 return NotFound();
@@ -50,6 +54,7 @@ namespace NornavindCinema.Controllers {
             return movie is null ? NotFound() : View(MovieFormViewModel.FromMovie(movie));
         }
 
+        [Authorize(Policy = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, MovieFormViewModel form) {
@@ -67,6 +72,7 @@ namespace NornavindCinema.Controllers {
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = "Administrator")]
         public async Task<IActionResult> Delete(int? id) {
             if (id is null) {
                 return NotFound();
@@ -78,6 +84,7 @@ namespace NornavindCinema.Controllers {
             return movie is null ? NotFound() : View(movie);
         }
 
+        [Authorize(Policy = "Administrator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id) {
