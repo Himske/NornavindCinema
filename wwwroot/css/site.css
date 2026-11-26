@@ -2,6 +2,12 @@ html {
   font-size: 14px;
 }
 
+.admin-review-text {
+  max-width: 30rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;

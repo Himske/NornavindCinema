@@ -1,0 +1,13 @@
+@model NornavindCinema.ViewModels.AdminUserViewModel
+@{
+    ViewData["Title"] = "Delete user";
+}
+
+<section class="movie-management">
+    <h1>Delete user</h1>
+    <p>Delete <strong>@(Model.Email ?? Model.Id)</strong>? This permanently deletes the account, its favorites and its reviews and ratings.</p>
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        <button type="submit" class="btn btn-danger">Delete account</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</section>

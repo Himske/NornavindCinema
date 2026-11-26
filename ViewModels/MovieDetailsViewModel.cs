@@ -20,6 +20,7 @@ namespace NornavindCinema.ViewModels {
     public class MovieDetailsViewModel {
         public Movie Movie { get; set; } = null!;
         public bool IsFavorite { get; set; }
+        public bool OwnReviewIsHidden { get; set; }
         public MovieReviewInput Feedback { get; set; } = new();
         public List<MemberMovieReview> Reviews { get; set; } = [];
     }

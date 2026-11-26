@@ -13,6 +13,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.Configure<SecurityStampValidatorOptions>(options => options.ValidationInterval = TimeSpan.Zero);
 builder.Services.AddAuthorization(options => {
     options.AddPolicy("Administrator", policy => policy.RequireAuthenticatedUser().RequireRole("Admin"));
     options.AddPolicy("MovieMember", policy => policy.RequireAuthenticatedUser().RequireRole("Member", "Admin"));

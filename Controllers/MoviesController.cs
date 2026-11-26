@@ -87,13 +87,15 @@ namespace NornavindCinema.Controllers {
             var movie = await context.Movies.AsNoTracking().FirstOrDefaultAsync(movie => movie.Id == id);
             if (movie is null) return null;
 
-            var reviews = await context.MemberMovieReviews.AsNoTracking().Where(review => review.MovieId == id)
+            var reviews = await context.MemberMovieReviews.AsNoTracking().Where(review => review.MovieId == id && !review.IsHidden)
                 .OrderBy(review => review.UserId).ToListAsync();
             var userId = userManager.GetUserId(User);
-            var own = reviews.FirstOrDefault(review => review.UserId == userId);
+            var own = userId is null ? null : await context.MemberMovieReviews.AsNoTracking()
+                .FirstOrDefaultAsync(review => review.MovieId == id && review.UserId == userId);
             return new MovieDetailsViewModel {
                 Movie = movie,
                 Reviews = reviews,
+                OwnReviewIsHidden = own?.IsHidden ?? false,
                 IsFavorite = userId is not null && await context.MovieFavorites.AsNoTracking().AnyAsync(favorite => favorite.UserId == userId && favorite.MovieId == id),
                 Feedback = new MovieReviewInput { Rating = own?.Rating, Review = own?.Review }
             };

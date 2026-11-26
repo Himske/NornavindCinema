@@ -1,0 +1,42 @@
+@model IReadOnlyList<NornavindCinema.Models.MemberMovieReview>
+@{
+    ViewData["Title"] = "Moderate reviews";
+}
+
+<section class="movie-management">
+    <h1>Moderate reviews</h1>
+    <p>Hiding a review also hides its rating from the public average. Member edits remain hidden until restored.</p>
+    @if (TempData["ModerationSuccess"] is string message) {
+        <div class="alert alert-success" role="status">@message</div>
+    }
+    @if (Model.Count == 0) {
+        <p>No reviews or ratings yet.</p>
+    }
+    else {
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead><tr><th scope="col">Movie</th><th scope="col">Member</th><th scope="col">Rating</th><th scope="col">Review</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
+                <tbody>
+                    @foreach (var review in Model) {
+                        <tr>
+                            <td><a asp-controller="Movies" asp-action="Details" asp-route-id="@review.MovieId">@review.Movie.Title</a></td>
+                            <td>@(review.User.Email ?? review.UserId)</td>
+                            <td>@(review.Rating?.ToString() ?? "N/A")</td>
+                            <td class="admin-review-text">@(review.Review ?? "No written review")</td>
+                            <td>@(review.IsHidden ? "Hidden" : "Visible")</td>
+                            <td>
+                                <form asp-action="SetVisibility" method="post">
+                                    <input type="hidden" name="userId" value="@review.UserId" />
+                                    <input type="hidden" name="movieId" value="@review.MovieId" />
+                                    <input type="hidden" name="hidden" value="@(!review.IsHidden ? "true" : "false")" />
+                                    <button type="submit" class="btn btn-sm btn-outline-primary">@(review.IsHidden ? "Restore" : "Hide")</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    <a asp-controller="Admin" asp-action="Index">Back to administration</a>
+</section>

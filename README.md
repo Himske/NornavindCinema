@@ -12,6 +12,10 @@ The Administration page is restricted to users assigned the `Admin` Identity rol
 
 Open the account dropdown, select **Administration**, and submit **Seed movies**. Import runs as a single database transaction; errors are not reported as success. The result shows the number added and skipped. The seed data file is included in published output and must remain in the `Data` directory under the application's content root.
 
+Administrators can use **Manage users** to add or remove Guest, Member and Admin roles and permanently delete accounts. Deleting an account also deletes its favorites, reviews and ratings. Administrators cannot remove their own Admin role or delete their own account, and the last administrator cannot be removed. Role changes invalidate existing sessions on the next request.
+
+Administrators can use **Moderate reviews** to hide or restore a member's review and rating together. Hidden ratings are excluded from public averages. Authors can still edit hidden submissions, which remain hidden until an administrator restores them.
+
 ## Member favorites and reviews
 
 Signed-in Members and Admins can add or remove favorites and save one review and an optional 1–10 rating per movie on its details page. A review or a rating can be saved on its own and edited later. Member reviews are publicly visible without displaying account names. The account menu links to **My favorites**. Favorites and reviews are stored per account in the database; the earlier browser-only home-page list is not imported automatically.

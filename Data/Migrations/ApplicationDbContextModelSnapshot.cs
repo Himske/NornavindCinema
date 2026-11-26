@@ -247,6 +247,9 @@ namespace NornavindCinema.Data.Migrations
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("Rating")
                         .HasColumnType("int");
 

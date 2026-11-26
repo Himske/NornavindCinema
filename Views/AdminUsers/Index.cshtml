@@ -1,0 +1,45 @@
+@model IReadOnlyList<NornavindCinema.ViewModels.AdminUserViewModel>
+@{
+    ViewData["Title"] = "Manage users";
+    var roles = new[] { "Guest", "Member", "Admin" };
+}
+
+<section class="movie-management">
+    <h1>Manage users</h1>
+    <p>Changes to roles take effect on the user's next request.</p>
+    @if (TempData["AdminSuccess"] is string success) {
+        <div class="alert alert-success" role="status">@success</div>
+    }
+    @if (TempData["AdminError"] is string error) {
+        <div class="alert alert-danger" role="alert">@error</div>
+    }
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th scope="col">Email</th><th scope="col">Confirmed</th><th scope="col">Roles</th><th scope="col">Actions</th></tr></thead>
+            <tbody>
+                @foreach (var user in Model) {
+                    <tr>
+                        <td>@(user.Email ?? "No email")</td>
+                        <td>@(user.EmailConfirmed ? "Yes" : "No")</td>
+                        <td>
+                            @foreach (var role in roles) {
+                                var assigned = user.Roles.Contains(role, StringComparer.OrdinalIgnoreCase);
+                                <form asp-action="SetRole" method="post" class="d-inline-block me-1 mb-1">
+                                    <input type="hidden" name="id" value="@user.Id" />
+                                    <input type="hidden" name="role" value="@role" />
+                                    <input type="hidden" name="enabled" value="@(!assigned ? "true" : "false")" />
+                                    <button type="submit" class="btn btn-sm @(assigned ? "btn-primary" : "btn-outline-secondary")" aria-label="@(assigned ? "Remove" : "Add") @role role for @user.Email">@(assigned ? "Remove" : "Add") @role</button>
+                                </form>
+                            }
+                            @foreach (var role in user.Roles.Where(role => !roles.Contains(role, StringComparer.OrdinalIgnoreCase))) {
+                                <span class="badge text-bg-secondary">@role</span>
+                            }
+                        </td>
+                        <td><a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-sm btn-outline-danger">Delete account</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <a asp-controller="Admin" asp-action="Index">Back to administration</a>
+</section>

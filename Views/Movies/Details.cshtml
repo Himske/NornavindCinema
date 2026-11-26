@@ -102,6 +102,9 @@
         @if (isMember) {
             <form asp-action="Review" asp-route-id="@movie.Id" method="post" class="movie-details__review-form">
                 <h3>Your review and rating</h3>
+                @if (Model.OwnReviewIsHidden) {
+                    <p>Your review and rating are hidden by a moderator. Edits remain hidden until restored.</p>
+                }
                 <div asp-validation-summary="ModelOnly" class="movie-details__error" role="alert"></div>
                 <label asp-for="Feedback.Rating">Your rating (1–10, optional)</label>
                 <select asp-for="Feedback.Rating">

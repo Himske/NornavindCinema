@@ -10,5 +10,6 @@ namespace NornavindCinema.Models {
         public int? Rating { get; set; }
         [MaxLength(2000)]
         public string? Review { get; set; }
+        public bool IsHidden { get; set; }
     }
 }
