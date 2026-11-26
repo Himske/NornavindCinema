@@ -15,8 +15,8 @@
 <section class="movie-management">
     <div class="movie-management__header">
         <div>
-            <h1>Manage Movies</h1>
-            <p>View, search and manage all movies in the system.</p>
+            <h1>Movies</h1>
+            <p>View and search all movies in the system.</p>
         </div>
         @if (isAdministrator) {
             <a asp-action="Create" class="btn btn-primary movie-add-button">
@@ -59,7 +59,9 @@
                     <th scope="col">Genre</th>
                     <th scope="col">Rating</th>
                     <th scope="col">Release Date</th>
-                    <th scope="col">Actions</th>
+                    @if (isAdministrator) {
+                        <th scope="col">Actions</th>
+                    }
                 </tr>
             </thead>
             <tbody id="movie-rows">
@@ -88,27 +90,22 @@
                             }
                         </td>
                         <td>@(movie.Released?.ToString("yyyy-MM-dd") ?? "N/A")</td>
-                        <td>
-                            <div class="movie-actions">
-                                @if (isAdministrator) {
+                        @if (isAdministrator) {
+                            <td>
+                                <div class="movie-actions">
                                     <a asp-action="Edit" asp-route-id="@movie.Id" class="btn btn-primary btn-sm">
                                         <span aria-hidden="true">✎</span> Edit
                                     </a>
-                                }
-                                <a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-outline-secondary btn-sm">
-                                    <span aria-hidden="true">◉</span> Details
-                                </a>
-                                @if (isAdministrator) {
                                     <a asp-action="Delete" asp-route-id="@movie.Id" class="btn btn-danger btn-sm">
                                         <span aria-hidden="true">▣</span> Delete
                                     </a>
-                                }
-                            </div>
-                        </td>
+                                </div>
+                            </td>
+                        }
                     </tr>
                 }
                 <tr id="movie-empty" hidden>
-                    <td colspan="6" class="movie-empty">No movies match your search.</td>
+                    <td colspan="@(isAdministrator ? 6 : 5)" class="movie-empty">No movies match your search.</td>
                 </tr>
             </tbody>
         </table>

@@ -54,11 +54,11 @@
   color: #b7b7c1;
 }
 
-.cinema-body--standard a:not(.btn):not(.nav-link):not(.dropdown-item) {
+.cinema-body--standard a:not(.btn):not(.nav-link):not(.dropdown-item):not(.navbar-brand) {
   color: #ff8c92;
 }
 
-.cinema-body--standard a:not(.btn):not(.nav-link):not(.dropdown-item):hover {
+.cinema-body--standard a:not(.btn):not(.nav-link):not(.dropdown-item):not(.navbar-brand):hover {
   color: #ffb1b5;
 }
 
