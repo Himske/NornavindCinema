@@ -16,6 +16,9 @@ namespace NornavindCinema.Data {
         public Task<TmdbMovie> GetMovieAsync(int id, CancellationToken cancellationToken) =>
             GetAsync<TmdbMovie>($"movie/{id.ToString(CultureInfo.InvariantCulture)}?language=en-US&append_to_response=credits", cancellationToken);
 
+        public Task<TmdbFindResponse> FindByImdbIdAsync(string imdbId, CancellationToken cancellationToken) =>
+            GetAsync<TmdbFindResponse>($"find/{Uri.EscapeDataString(imdbId)}?external_source=imdb_id", cancellationToken);
+
         private async Task<T> GetAsync<T>(string uri, CancellationToken cancellationToken) {
             var token = await credentials.GetAsync(ApiCredentialStore.TmdbReadAccessToken, cancellationToken);
             if (string.IsNullOrWhiteSpace(token)) throw new TmdbConfigurationException();
@@ -76,6 +79,10 @@ namespace NornavindCinema.Data {
     }
 
     public class TmdbConfigurationException : Exception;
+
+    public class TmdbFindResponse {
+        [JsonPropertyName("movie_results")] public List<TmdbMovie>? MovieResults { get; set; }
+    }
 
     public class TmdbSearchResponse {
         public int Page { get; set; }

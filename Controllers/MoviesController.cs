@@ -192,6 +192,76 @@ namespace NornavindCinema.Controllers {
         }
 
         [Authorize(Policy = "Administrator")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RefreshFromTmdb(int id, MovieFormViewModel form, [FromServices] TmdbClient tmdb,
+            [FromServices] ILogger<MoviesController> logger, CancellationToken cancellationToken) {
+            form.Id = id;
+            if (!await context.Movies.AsNoTracking().AnyAsync(movie => movie.Id == id, cancellationToken)) return NotFound();
+            if (!ModelState.IsValid) return View("Edit", form);
+
+            var imdbId = form.ImdbId?.Trim();
+            if (form.TmdbId is null && (imdbId is null || !Regex.IsMatch(imdbId, @"\Att[0-9]{1,15}\z", RegexOptions.CultureInvariant))) {
+                ModelState.AddModelError(nameof(form.ImdbId), "Enter a valid IMDb ID or a TMDB ID before updating from TMDB.");
+                return View("Edit", form);
+            }
+
+            try {
+                var tmdbId = form.TmdbId;
+                if (tmdbId is null) {
+                    var matches = (await tmdb.FindByImdbIdAsync(imdbId!, cancellationToken)).MovieResults;
+                    if (matches is null || matches.Count != 1 || matches[0].Id <= 0) {
+                        ModelState.AddModelError(nameof(form.ImdbId), "TMDB did not find a unique movie for this IMDb ID.");
+                        return View("Edit", form);
+                    }
+                    tmdbId = matches[0].Id;
+                }
+
+                var source = await tmdb.GetMovieAsync(tmdbId.Value, cancellationToken);
+                if (source.Id != tmdbId || (!string.IsNullOrWhiteSpace(source.ImdbId) && !string.IsNullOrWhiteSpace(imdbId)
+                    && !string.Equals(source.ImdbId.Trim(), imdbId, StringComparison.OrdinalIgnoreCase))) {
+                    throw new InvalidDataException("TMDB returned a different movie identity.");
+                }
+                var movie = TmdbClient.ToMovie(source);
+                form.TmdbId = movie.TmdbId;
+                form.ImdbId = movie.ImdbId ?? form.ImdbId;
+                form.Title = movie.Title;
+                form.Year = movie.Year ?? form.Year;
+                form.Released = movie.Released ?? form.Released;
+                form.Runtime = movie.Runtime ?? form.Runtime;
+                if (movie.Genres.Count > 0) form.Genres = string.Join(Environment.NewLine, movie.Genres);
+                form.Director = movie.Director ?? form.Director;
+                form.Writer = movie.Writer ?? form.Writer;
+                if (movie.Actors.Count > 0) form.Actors = string.Join(Environment.NewLine, movie.Actors);
+                if (!string.IsNullOrWhiteSpace(movie.Plot)) form.Plot = movie.Plot;
+                if (!string.IsNullOrWhiteSpace(movie.Language)) form.Language = movie.Language;
+                if (!string.IsNullOrWhiteSpace(movie.Country)) form.Country = movie.Country;
+                if (!string.IsNullOrWhiteSpace(movie.Production)) form.Production = movie.Production;
+                form.BoxOffice = movie.BoxOffice ?? form.BoxOffice;
+                form.Poster = movie.Poster ?? form.Poster;
+                form.Backdrop = movie.Backdrop ?? form.Backdrop;
+                if (movie.Ratings.Count > 0) {
+                    var ratings = form.Ratings.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        .Where(line => !string.Equals(line.Split('|', 2)[0].Trim(), "The Movie Database", StringComparison.OrdinalIgnoreCase))
+                        .Append($"{movie.Ratings[0].Source} | {movie.Ratings[0].Value}");
+                    form.Ratings = string.Join(Environment.NewLine, ratings);
+                }
+                ModelState.Clear();
+                ViewData["TmdbRefreshMessage"] = "TMDB information loaded. Review the changes and select Save to apply them.";
+                return View("Edit", form);
+            }
+            catch (TmdbConfigurationException) {
+                ModelState.AddModelError(string.Empty, "Configure a TMDB API read access token before updating this movie.");
+            }
+            catch (Exception ex) when (ex is HttpRequestException or JsonException or InvalidDataException or CryptographicException or FormatException
+                || (ex is TaskCanceledException && !cancellationToken.IsCancellationRequested)) {
+                logger.LogWarning("TMDB movie refresh failed ({ErrorType}).", ex.GetType().Name);
+                ModelState.AddModelError(string.Empty, "Unable to update from TMDB. Check the movie IDs and API configuration, then try again.");
+            }
+            return View("Edit", form);
+        }
+
+        [Authorize(Policy = "Administrator")]
         public async Task<IActionResult> Delete(int? id) {
             if (id is null) {
                 return NotFound();

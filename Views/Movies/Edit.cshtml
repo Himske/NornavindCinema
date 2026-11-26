@@ -9,6 +9,9 @@
 @if (ViewData["OmdbRefreshMessage"] is string message) {
     <div class="alert alert-success" role="status">@message</div>
 }
+@if (ViewData["TmdbRefreshMessage"] is string tmdbMessage) {
+    <div class="alert alert-success" role="status">@tmdbMessage</div>
+}
 <div class="row">
     <div class="col-lg-8">
         <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
@@ -20,6 +23,8 @@
             </div>
             <button type="submit" class="btn btn-outline-primary" asp-action="RefreshFromOmdb" asp-route-id="@Model.Id">Update from OMDB</button>
             <p class="form-text">Loads OMDB fields using the IMDb ID above, replacing their current values (including ratings). Review the result and save to apply it.</p>
+            <button type="submit" class="btn btn-outline-primary" asp-action="RefreshFromTmdb" asp-route-id="@Model.Id">Update from TMDB</button>
+            <p class="form-text">Loads available TMDB details using the TMDB ID, or the IMDb ID if no TMDB ID is entered. Review the result and save to apply it.</p>
             <button type="submit" class="btn btn-primary">Save</button>
             <a asp-action="Index" class="btn btn-secondary">Cancel</a>
         </form>
