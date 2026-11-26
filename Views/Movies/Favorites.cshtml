@@ -1,0 +1,37 @@
+@model IEnumerable<NornavindCinema.Models.Movie>
+@{
+    ViewData["Title"] = "My favorites";
+    ViewData["Cinema"] = true;
+    ViewData["BodyClass"] = "cinema-body--details";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/movie-details.css" asp-append-version="true" />
+}
+
+<section class="movie-details" aria-labelledby="favorites-title">
+    <h1 id="favorites-title">My favorites</h1>
+    @if (!Model.Any()) {
+        <p>You haven't added any favorite movies yet.</p>
+        <a asp-action="Index" class="movie-details__button movie-details__button--secondary">Browse movies</a>
+    }
+    else {
+        <div class="favorites-grid">
+            @foreach (var movie in Model) {
+                <article class="movie-details__panel favorites-card">
+                    <a asp-action="Details" asp-route-id="@movie.Id">
+                        @if (!string.IsNullOrWhiteSpace(movie.Poster) && movie.Poster != "N/A") {
+                            <img src="@movie.Poster" alt="" loading="lazy" />
+                        }
+                        <span>@movie.Title</span>
+                    </a>
+                    <form asp-action="Favorite" asp-route-id="@movie.Id" method="post">
+                        <input type="hidden" name="isFavorite" value="false" />
+                        <input type="hidden" name="returnTo" value="Favorites" />
+                        <button class="movie-details__button movie-details__button--secondary" type="submit">Remove from favorites</button>
+                    </form>
+                </article>
+            }
+        </div>
+    }
+</section>

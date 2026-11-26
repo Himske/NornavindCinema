@@ -239,6 +239,31 @@ namespace NornavindCinema.Data.Migrations
                     b.ToTable("ApiCredentials");
                 });
 
+            modelBuilder.Entity("NornavindCinema.Models.MemberMovieReview", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Review")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.HasKey("UserId", "MovieId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("MemberMovieReviews", t =>
+                        {
+                            t.HasCheckConstraint("CK_MemberMovieReviews_Rating", "[Rating] IS NULL OR ([Rating] >= 1 AND [Rating] <= 10)");
+                        });
+                });
+
             modelBuilder.Entity("NornavindCinema.Models.Movie", b =>
                 {
                     b.Property<int>("Id")
@@ -317,6 +342,21 @@ namespace NornavindCinema.Data.Migrations
                     b.ToTable("Movies");
                 });
 
+            modelBuilder.Entity("NornavindCinema.Models.MovieFavorite", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "MovieId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("MovieFavorites");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -368,6 +408,25 @@ namespace NornavindCinema.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("NornavindCinema.Models.MemberMovieReview", b =>
+                {
+                    b.HasOne("NornavindCinema.Models.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NornavindCinema.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("NornavindCinema.Models.Movie", b =>
                 {
                     b.OwnsMany("NornavindCinema.Models.MovieRating", "Ratings", b1 =>
@@ -398,6 +457,25 @@ namespace NornavindCinema.Data.Migrations
                         });
 
                     b.Navigation("Ratings");
+                });
+
+            modelBuilder.Entity("NornavindCinema.Models.MovieFavorite", b =>
+                {
+                    b.HasOne("NornavindCinema.Models.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NornavindCinema.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

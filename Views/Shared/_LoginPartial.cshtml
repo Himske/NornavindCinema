@@ -17,6 +17,10 @@
         </button>
         <ul class="dropdown-menu dropdown-menu-end @(cinema ? "dropdown-menu-dark" : null)" aria-labelledby="accountDropdown">
             <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Manage account</a></li>
+            @if ((await AuthorizationService.AuthorizeAsync(User, "MovieMember")).Succeeded)
+            {
+                <li><a class="dropdown-item" asp-area="" asp-controller="Movies" asp-action="Favorites">My favorites</a></li>
+            }
             @if ((await AuthorizationService.AuthorizeAsync(User, "Administrator")).Succeeded)
             {
                 <li><hr class="dropdown-divider" /></li>

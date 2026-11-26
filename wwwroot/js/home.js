@@ -25,24 +25,6 @@
             });
         });
         restart();
-
-        var stored = [];
-        try { stored = JSON.parse(localStorage.getItem("cinema-list") || "[]"); } catch (e) { stored = []; }
-        var buttons = hero.querySelectorAll("[data-add-list]");
-        var paint = function (btn) {
-            var on = stored.indexOf(btn.getAttribute("data-add-list")) >= 0;
-            btn.textContent = on ? "\u2713 IN LIST" : "+ ADD LIST";
-        };
-        buttons.forEach(function (btn) {
-            paint(btn);
-            btn.addEventListener("click", function () {
-                var id = btn.getAttribute("data-add-list");
-                var at = stored.indexOf(id);
-                if (at >= 0) { stored.splice(at, 1); } else { stored.push(id); }
-                try { localStorage.setItem("cinema-list", JSON.stringify(stored)); } catch (e) { }
-                paint(btn);
-            });
-        });
     }
 
     var trends = document.querySelector("[data-trends]");

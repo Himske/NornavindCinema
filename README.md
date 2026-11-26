@@ -12,6 +12,10 @@ The Administration page is restricted to users assigned the `Admin` Identity rol
 
 Open the account dropdown, select **Administration**, and submit **Seed movies**. Import runs as a single database transaction; errors are not reported as success. The result shows the number added and skipped. The seed data file is included in published output and must remain in the `Data` directory under the application's content root.
 
+## Member favorites and reviews
+
+Signed-in Members and Admins can add or remove favorites and save one review and an optional 1–10 rating per movie on its details page. A review or a rating can be saved on its own and edited later. Member reviews are publicly visible without displaying account names. The account menu links to **My favorites**. Favorites and reviews are stored per account in the database; the earlier browser-only home-page list is not imported automatically.
+
 ## API credentials
 
 Administrators can select **Configure APIs** from the account dropdown or Administration page to save or remove the OMDB API key, TMDB API key, and TMDB API read access token. Leave a field blank to retain its current value. The page indicates whether a value is present but never displays saved secrets. These settings are stored for future API integrations; saving them does not by itself connect to either service.

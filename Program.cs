@@ -13,8 +13,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddAuthorization(options => options.AddPolicy("Administrator", policy =>
-    policy.RequireAuthenticatedUser().RequireRole("Admin")));
+builder.Services.AddAuthorization(options => {
+    options.AddPolicy("Administrator", policy => policy.RequireAuthenticatedUser().RequireRole("Admin"));
+    options.AddPolicy("MovieMember", policy => policy.RequireAuthenticatedUser().RequireRole("Member", "Admin"));
+});
 builder.Services.AddScoped<MovieSeeder>();
 builder.Services.AddScoped<ApiCredentialStore>();
 builder.Services.AddControllersWithViews();

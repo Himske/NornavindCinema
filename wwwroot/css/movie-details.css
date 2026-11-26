@@ -206,6 +206,81 @@
   grid-template-columns: minmax(0, 1fr) auto;
 }
 
+.movie-details__reviews {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+}
+
+.movie-details__reviews h2,
+.movie-details__reviews h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.movie-details__reviews a,
+.favorites-card a {
+  color: #ff9a9f;
+}
+
+.movie-details__review-form {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 40rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.movie-details__review-form select,
+.movie-details__review-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  color: #fff;
+  background: #24242b;
+  border: 1px solid #44444d;
+  border-radius: 0.4rem;
+}
+
+.movie-details__review-form button {
+  justify-self: start;
+}
+
+.movie-details__error {
+  color: #ff9a9f;
+}
+
+.movie-details__review {
+  padding: 1rem 0;
+  border-top: 1px solid #303038;
+  overflow-wrap: anywhere;
+}
+
+.movie-details__review p {
+  white-space: pre-wrap;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.favorites-card {
+  padding: 1rem;
+}
+
+.favorites-card a {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.favorites-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  margin-bottom: 0.75rem;
+}
+
 .movie-details__backdrop {
   margin-top: 2rem;
 }

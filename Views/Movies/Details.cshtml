@@ -1,18 +1,20 @@
-@model NornavindCinema.Models.Movie
+@model NornavindCinema.ViewModels.MovieDetailsViewModel
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 
 @{
-    ViewData["Title"] = Model.Title;
+    var movie = Model.Movie;
+    ViewData["Title"] = movie.Title;
     ViewData["Cinema"] = true;
     ViewData["BodyClass"] = "cinema-body--details";
     var isAdministrator = (await AuthorizationService.AuthorizeAsync(User, "Administrator")).Succeeded;
-
+    var isMember = (await AuthorizationService.AuthorizeAsync(User, "MovieMember")).Succeeded;
+    var memberRatings = Model.Reviews.Where(review => review.Rating.HasValue).Select(review => review.Rating!.Value).ToList();
     string Display(string? value) => string.IsNullOrWhiteSpace(value) || value.Trim().Equals("N/A", StringComparison.OrdinalIgnoreCase) ? "N/A" : value;
-    var genres = Model.Genres.Count > 0 ? string.Join(", ", Model.Genres) : "N/A";
-    var actors = Model.Actors.Count > 0 ? string.Join(", ", Model.Actors) : "N/A";
-    var hasPoster = Display(Model.Poster) != "N/A";
-    var hasBackdrop = Display(Model.Backdrop) != "N/A";
+    var genres = movie.Genres.Count > 0 ? string.Join(", ", movie.Genres) : "N/A";
+    var actors = movie.Actors.Count > 0 ? string.Join(", ", movie.Actors) : "N/A";
+    var hasPoster = Display(movie.Poster) != "N/A";
+    var hasBackdrop = Display(movie.Backdrop) != "N/A";
 }
 
 @section Styles {
@@ -23,24 +25,30 @@
     <section class="movie-details__hero" aria-labelledby="movie-title">
         <div class="movie-details__poster">
             @if (hasPoster) {
-                <img src="@Model.Poster" alt="Poster for @Model.Title" />
+                <img src="@movie.Poster" alt="Poster for @movie.Title" />
             }
             else {
                 <span>Poster unavailable</span>
             }
         </div>
         <div class="movie-details__summary">
-            <h1 id="movie-title">@Display(Model.Title)</h1>
+            <h1 id="movie-title">@Display(movie.Title)</h1>
             <div class="movie-details__meta">
-                <span><span class="movie-details__star" aria-hidden="true">&#9733;</span> IMDb @Display(Model.ImdbRating) / 10</span>
-                <span>@Display(Model.Year)</span>
+                <span><span class="movie-details__star" aria-hidden="true">&#9733;</span> IMDb @Display(movie.ImdbRating) / 10</span>
+                <span>@Display(movie.Year)</span>
                 <span>@genres</span>
-                <span>@Display(Model.Runtime)</span>
+                <span>@Display(movie.Runtime)</span>
             </div>
-            <p class="movie-details__plot">@Display(Model.Plot)</p>
+            <p class="movie-details__plot">@Display(movie.Plot)</p>
             <div class="movie-details__actions">
+                @if (isMember) {
+                    <form asp-action="Favorite" asp-route-id="@movie.Id" method="post">
+                        <input type="hidden" name="isFavorite" value="@(!Model.IsFavorite ? "true" : "false")" />
+                        <button class="movie-details__button movie-details__button--primary" type="submit">@(Model.IsFavorite ? "Remove from favorites" : "Add to favorites")</button>
+                    </form>
+                }
                 @if (isAdministrator) {
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="movie-details__button movie-details__button--primary">Edit movie</a>
+                    <a asp-action="Edit" asp-route-id="@movie.Id" class="movie-details__button movie-details__button--primary">Edit movie</a>
                 }
                 <a asp-action="Index" class="movie-details__button movie-details__button--secondary">Back to movies</a>
             </div>
@@ -51,38 +59,88 @@
         <section class="movie-details__panel" aria-labelledby="overview-title">
             <h2 id="overview-title" class="movie-details__panel-heading">Overview</h2>
             <dl class="movie-details__facts">
-                <div><dt>Director</dt><dd>@Display(Model.Director)</dd></div>
-                <div><dt>Writers</dt><dd>@Display(Model.Writer)</dd></div>
+                <div><dt>Director</dt><dd>@Display(movie.Director)</dd></div>
+                <div><dt>Writers</dt><dd>@Display(movie.Writer)</dd></div>
                 <div><dt>Stars</dt><dd>@actors</dd></div>
-                <div><dt>Release date</dt><dd>@(Model.Released?.ToString("D") ?? "N/A")</dd></div>
-                <div><dt>Language</dt><dd>@Display(Model.Language)</dd></div>
-                <div><dt>Box office</dt><dd>@Display(Model.BoxOffice)</dd></div>
-                <div><dt>Rated</dt><dd>@Display(Model.Rated)</dd></div>
-                <div><dt>Country</dt><dd>@Display(Model.Country)</dd></div>
-                <div><dt>Awards</dt><dd>@Display(Model.Awards)</dd></div>
-                <div><dt>Production</dt><dd>@Display(Model.Production)</dd></div>
-                <div><dt>Metascore</dt><dd>@Display(Model.Metascore)</dd></div>
-                <div><dt>IMDb ID</dt><dd>@Display(Model.ImdbId)</dd></div>
+                <div><dt>Release date</dt><dd>@(movie.Released?.ToString("D") ?? "N/A")</dd></div>
+                <div><dt>Language</dt><dd>@Display(movie.Language)</dd></div>
+                <div><dt>Box office</dt><dd>@Display(movie.BoxOffice)</dd></div>
+                <div><dt>Rated</dt><dd>@Display(movie.Rated)</dd></div>
+                <div><dt>Country</dt><dd>@Display(movie.Country)</dd></div>
+                <div><dt>Awards</dt><dd>@Display(movie.Awards)</dd></div>
+                <div><dt>Production</dt><dd>@Display(movie.Production)</dd></div>
+                <div><dt>Metascore</dt><dd>@Display(movie.Metascore)</dd></div>
+                <div><dt>IMDb ID</dt><dd>@Display(movie.ImdbId)</dd></div>
             </dl>
         </section>
 
         <aside class="movie-details__panel movie-details__ratings" aria-labelledby="ratings-title">
             <h2 id="ratings-title">Ratings</h2>
-            <p class="movie-details__score"><span class="movie-details__star" aria-hidden="true">&#9733;</span> @Display(Model.ImdbRating) <span>/ 10</span></p>
-            <p class="movie-details__votes">IMDb votes: @Display(Model.ImdbVotes)</p>
-            @if (Model.Ratings.Count > 0) {
+            <p class="movie-details__score"><span class="movie-details__star" aria-hidden="true">&#9733;</span> @Display(movie.ImdbRating) <span>/ 10 IMDb</span></p>
+            <p class="movie-details__votes">IMDb votes: @Display(movie.ImdbVotes)</p>
+            @if (memberRatings.Count > 0) {
+                <p>Member rating: @memberRatings.Average().ToString("0.0") / 10 (@memberRatings.Count)</p>
+            }
+            else {
+                <p>No member ratings yet.</p>
+            }
+            @if (movie.Ratings.Count > 0) {
                 <dl class="movie-details__rating-list">
-                    @foreach (var rating in Model.Ratings) {
+                    @foreach (var rating in movie.Ratings) {
                         <div><dt>@Display(rating.Source)</dt><dd>@Display(rating.Value)</dd></div>
                     }
                 </dl>
             }
         </aside>
     </div>
+
+    <section class="movie-details__panel movie-details__reviews" aria-labelledby="reviews-title">
+        <h2 id="reviews-title">Member reviews</h2>
+        @if (TempData["ReviewSaved"] is string message) {
+            <p role="status">@message</p>
+        }
+        @if (isMember) {
+            <form asp-action="Review" asp-route-id="@movie.Id" method="post" class="movie-details__review-form">
+                <h3>Your review and rating</h3>
+                <div asp-validation-summary="ModelOnly" class="movie-details__error" role="alert"></div>
+                <label asp-for="Feedback.Rating">Your rating (1–10, optional)</label>
+                <select asp-for="Feedback.Rating">
+                    <option value="">No rating</option>
+                    @for (var score = 1; score <= 10; score++) {
+                        <option value="@score">@score</option>
+                    }
+                </select>
+                <span asp-validation-for="Feedback.Rating" class="movie-details__error"></span>
+                <label asp-for="Feedback.Review">Your review (optional)</label>
+                <textarea asp-for="Feedback.Review" rows="4" maxlength="2000"></textarea>
+                <span asp-validation-for="Feedback.Review" class="movie-details__error"></span>
+                <button type="submit" class="movie-details__button movie-details__button--primary">Save review and rating</button>
+            </form>
+        }
+        else if (!(User.Identity?.IsAuthenticated ?? false)) {
+            <p><a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Details", "Movies", new { id = movie.Id })">Log in</a> to add favorites, reviews and ratings.</p>
+        }
+        else {
+            <p>A Member or Admin role is required to add favorites, reviews and ratings.</p>
+        }
+        @if (Model.Reviews.Any(review => !string.IsNullOrWhiteSpace(review.Review))) {
+            @foreach (var review in Model.Reviews.Where(review => !string.IsNullOrWhiteSpace(review.Review))) {
+                <article class="movie-details__review">
+                    <strong>Member review</strong>
+                    @if (review.Rating.HasValue) { <span> · @review.Rating / 10</span> }
+                    <p>@review.Review</p>
+                </article>
+            }
+        }
+        else {
+            <p>No member reviews yet.</p>
+        }
+    </section>
+
     @if (hasBackdrop) {
         <section class="movie-details__backdrop" aria-labelledby="backdrop-title">
             <h2 id="backdrop-title">Backdrop</h2>
-            <img src="@Model.Backdrop" alt="Backdrop for @Model.Title" />
+            <img src="@movie.Backdrop" alt="Backdrop for @movie.Title" />
         </section>
     }
 </div>
