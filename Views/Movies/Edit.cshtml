@@ -6,6 +6,9 @@
 
 <h1>Edit movie</h1>
 <hr />
+@if (ViewData["OmdbRefreshMessage"] is string message) {
+    <div class="alert alert-success" role="status">@message</div>
+}
 <div class="row">
     <div class="col-lg-8">
         <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
@@ -15,6 +18,8 @@
                 <input asp-for="TmdbId" class="form-control" />
                 <span asp-validation-for="TmdbId" class="text-danger"></span>
             </div>
+            <button type="submit" class="btn btn-outline-primary" asp-action="RefreshFromOmdb" asp-route-id="@Model.Id">Update from OMDB</button>
+            <p class="form-text">Loads OMDB fields using the IMDb ID above, replacing their current values (including ratings). Review the result and save to apply it.</p>
             <button type="submit" class="btn btn-primary">Save</button>
             <a asp-action="Index" class="btn btn-secondary">Cancel</a>
         </form>

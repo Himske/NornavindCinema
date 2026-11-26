@@ -24,7 +24,7 @@ Signed-in Members and Admins can add or remove favorites and save one review and
 
 Administrators can select **Configure APIs** from the account dropdown or Administration page to save or remove the OMDB API key, TMDB API key, and TMDB API read access token. Leave a field blank to retain its current value. The page indicates whether a value is present but never displays saved secrets.
 
-With an OMDB API key configured, administrators can use **Search OMDB** to search movies and import full details. Imports skip existing IMDb IDs without changing them. OMDB returns up to ten results per page and supports at most 100 pages.
+With an OMDB API key configured, administrators can use **Search OMDB** to search movies and import full details. Imports skip existing IMDb IDs without changing them. OMDB returns up to ten results per page and supports at most 100 pages. On the movie edit page, **Update from OMDB** loads data using the entered IMDb ID and replaces the form's OMDB fields, including ratings. The TMDB ID and backdrop are retained. Review the result and select **Save** to persist it; no changes are saved by the lookup itself.
 
 With the TMDB API read access token configured, administrators can use **Search TMDB** to search and import movies. Imports skip existing TMDB IDs or matching IMDb IDs without changing existing records. A match against an OMDB movie can only be detected when importing, because the search results do not contain IMDb IDs. TMDB images and ratings are credited to TMDB; missing IMDb ratings remain unset. The separate TMDB API key is not used for this integration. TMDB data is provided by TMDB, and this product is not endorsed or certified by TMDB.
 

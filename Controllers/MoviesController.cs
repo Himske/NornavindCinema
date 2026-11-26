@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using NornavindCinema.Data;
 using NornavindCinema.Models;
 using NornavindCinema.ViewModels;
+using System.Security.Cryptography;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace NornavindCinema.Controllers {
     public class MoviesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager) : Controller {
@@ -145,6 +148,47 @@ namespace NornavindCinema.Controllers {
             form.ApplyTo(movie);
             await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Policy = "Administrator")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RefreshFromOmdb(int id, MovieFormViewModel form, [FromServices] OmdbClient omdb,
+            [FromServices] ILogger<MoviesController> logger, CancellationToken cancellationToken) {
+            form.Id = id;
+            if (!await context.Movies.AsNoTracking().AnyAsync(movie => movie.Id == id, cancellationToken)) return NotFound();
+            if (!ModelState.IsValid) return View("Edit", form);
+
+            var imdbId = form.ImdbId?.Trim();
+            if (imdbId is null || !Regex.IsMatch(imdbId, @"\Att[0-9]{1,15}\z", RegexOptions.CultureInvariant)) {
+                ModelState.AddModelError(nameof(form.ImdbId), "Enter a valid IMDb ID before updating from OMDB.");
+                return View("Edit", form);
+            }
+
+            try {
+                var source = await omdb.GetMovieAsync(imdbId, cancellationToken);
+                if (!string.Equals(source.ImdbId?.Trim(), imdbId, StringComparison.OrdinalIgnoreCase)
+                    || !string.Equals(source.Type, "movie", StringComparison.OrdinalIgnoreCase)) {
+                    throw new InvalidDataException("OMDB returned a different or non-movie record.");
+                }
+
+                var updated = MovieFormViewModel.FromMovie(MovieSeeder.ToMovie(source));
+                updated.Id = id;
+                updated.TmdbId = form.TmdbId;
+                updated.Backdrop = form.Backdrop;
+                ModelState.Clear();
+                ViewData["OmdbRefreshMessage"] = "OMDB information loaded. Review the changes and select Save to apply them.";
+                return View("Edit", updated);
+            }
+            catch (OmdbConfigurationException) {
+                ModelState.AddModelError(string.Empty, "Configure an OMDB API key before updating this movie.");
+            }
+            catch (Exception ex) when (ex is HttpRequestException or JsonException or InvalidDataException or CryptographicException
+                || (ex is TaskCanceledException && !cancellationToken.IsCancellationRequested)) {
+                logger.LogWarning("OMDB movie refresh failed ({ErrorType}).", ex.GetType().Name);
+                ModelState.AddModelError(string.Empty, "Unable to update from OMDB. Check the IMDb ID and API configuration, then try again.");
+            }
+            return View("Edit", form);
         }
 
         [Authorize(Policy = "Administrator")]
