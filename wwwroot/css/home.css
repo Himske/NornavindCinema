@@ -35,7 +35,7 @@
   color: #fff !important;
 }
 
-.cinema-nav .nav-link[href="/"]::after {
+.cinema-body--home .cinema-nav .nav-link[aria-current="page"]::after {
   content: "";
   display: block;
   width: 5px;

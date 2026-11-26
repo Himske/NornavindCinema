@@ -3,19 +3,15 @@
 @using NornavindCinema.Data
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IAuthorizationService AuthorizationService
-@{
-    var cinema = ViewData["Cinema"] is true;
-    var navLink = cinema ? "nav-link" : "nav-link text-dark";
-}
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item dropdown">
-        <button class="@navLink dropdown-toggle btn" type="button" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="nav-link dropdown-toggle btn" type="button" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
             Hello @User.Identity?.Name!
         </button>
-        <ul class="dropdown-menu dropdown-menu-end @(cinema ? "dropdown-menu-dark" : null)" aria-labelledby="accountDropdown">
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="accountDropdown">
             <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Manage account</a></li>
             @if ((await AuthorizationService.AuthorizeAsync(User, "MovieMember")).Succeeded)
             {
@@ -41,7 +37,7 @@
 else
 {
     <li class="nav-item">
-        <a class="@navLink" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
     </li>
 }
 </ul>
