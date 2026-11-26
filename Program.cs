@@ -20,6 +20,10 @@ builder.Services.AddAuthorization(options => {
 });
 builder.Services.AddScoped<MovieSeeder>();
 builder.Services.AddScoped<ApiCredentialStore>();
+builder.Services.AddHttpClient<OmdbClient>(client => {
+    client.BaseAddress = new Uri("https://www.omdbapi.com/");
+    client.Timeout = TimeSpan.FromSeconds(15);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false }).RemoveAllLoggers();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

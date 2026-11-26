@@ -1,0 +1,79 @@
+@model NornavindCinema.ViewModels.OmdbSearchViewModel
+@{
+    ViewData["Title"] = "Search OMDB";
+}
+
+<section class="movie-management">
+    <div class="movie-management__header">
+        <div>
+            <h1>Search OMDB</h1>
+            <p>Find movies and import their full details.</p>
+        </div>
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-secondary">Back to administration</a>
+    </div>
+
+    @if (TempData["OmdbMessage"] is string message) {
+        <div class="alert alert-success mt-3" role="status">@message</div>
+    }
+    @if (TempData["OmdbError"] is string error) {
+        <div class="alert alert-danger mt-3" role="alert">@error</div>
+    }
+    <form asp-action="Index" method="get" class="movie-toolbar">
+        <div class="movie-filters">
+            <label for="omdb-query" class="visually-hidden">Search movies</label>
+            <input id="omdb-query" name="query" value="@Model.Query" class="form-control" type="search" maxlength="100" required placeholder="Search movies..." />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+    @if (Model.Error is not null) {
+        <div class="alert alert-warning" role="alert">@Model.Error</div>
+    }
+    @if (Model.Results.Count > 0) {
+        <p>@Model.TotalResults results</p>
+        <div class="table-responsive">
+            <table class="table movie-table">
+                <thead><tr><th scope="col">Title</th><th scope="col">Year</th><th scope="col">Action</th></tr></thead>
+                <tbody>
+                    @foreach (var movie in Model.Results) {
+                        <tr>
+                            <td><div class="movie-title-cell">
+                                @if (!string.IsNullOrWhiteSpace(movie.Poster) && !string.Equals(movie.Poster.Trim(), "N/A", StringComparison.OrdinalIgnoreCase)) {
+                                    <img class="movie-poster" src="@movie.Poster" alt="" loading="lazy" />
+                                }
+                                else {
+                                    <div class="movie-poster movie-poster--empty" aria-hidden="true">&#127916;</div>
+                                }
+                                <span>@movie.Title</span>
+                            </div></td>
+                            <td>@movie.Year</td>
+                            <td>
+                                @if (movie.AlreadyImported) {
+                                    <span>Already imported</span>
+                                }
+                                else {
+                                    <form asp-action="Import" method="post">
+                                        <input type="hidden" name="imdbId" value="@movie.ImdbId" />
+                                        <input type="hidden" name="query" value="@Model.Query" />
+                                        <input type="hidden" name="page" value="@Model.Page" />
+                                        <button type="submit" class="btn btn-primary btn-sm">Import</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <nav class="movie-table-footer" aria-label="OMDB search pages">
+            <span>Page @Model.Page</span>
+            <div class="d-flex gap-2">
+                @if (Model.Page > 1) {
+                    <a asp-action="Index" asp-route-query="@Model.Query" asp-route-page="@(Model.Page - 1)" class="btn btn-outline-secondary btn-sm">Previous</a>
+                }
+                @if (Model.Page < 100 && (long)Model.Page * 10 < Model.TotalResults) {
+                    <a asp-action="Index" asp-route-query="@Model.Query" asp-route-page="@(Model.Page + 1)" class="btn btn-outline-secondary btn-sm">Next</a>
+                }
+            </div>
+        </nav>
+    }
+</section>

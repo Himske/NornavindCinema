@@ -31,7 +31,7 @@ namespace NornavindCinema.Data {
             return new SeedResult(newMovies.Count, movies.Count - newMovies.Count);
         }
 
-        private static Movie ToMovie(OmdbMovie source) {
+        public static Movie ToMovie(OmdbMovie source) {
             if (!string.Equals(source.Response, "True", StringComparison.OrdinalIgnoreCase)
                 || string.IsNullOrWhiteSpace(source.Title)
                 || string.IsNullOrWhiteSpace(source.ImdbId)
@@ -82,6 +82,7 @@ namespace NornavindCinema.Data {
         public sealed class OmdbMovie {
             public string? Title { get; set; }
             public string? Year { get; set; }
+            public string? Type { get; set; }
             public string? Rated { get; set; }
             public string? Released { get; set; }
             public string? Runtime { get; set; }

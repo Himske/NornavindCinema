@@ -22,6 +22,8 @@ Signed-in Members and Admins can add or remove favorites and save one review and
 
 ## API credentials
 
-Administrators can select **Configure APIs** from the account dropdown or Administration page to save or remove the OMDB API key, TMDB API key, and TMDB API read access token. Leave a field blank to retain its current value. The page indicates whether a value is present but never displays saved secrets. These settings are stored for future API integrations; saving them does not by itself connect to either service.
+Administrators can select **Configure APIs** from the account dropdown or Administration page to save or remove the OMDB API key, TMDB API key, and TMDB API read access token. Leave a field blank to retain its current value. The page indicates whether a value is present but never displays saved secrets.
+
+With an OMDB API key configured, administrators can use **Search OMDB** to search movies and import full details. Imports skip existing IMDb IDs without changing them. OMDB returns up to ten results per page and supports at most 100 pages. The TMDB settings are stored for future integrations.
 
 Credentials are encrypted using ASP.NET Core Data Protection before being stored in SQL Server. Persist and back up the application's Data Protection key ring in a secure location that survives deployments and is shared by all instances, and protect the key ring at rest using an appropriate platform or external key-management provider. Loss of the key ring makes saved credentials unreadable; they must then be entered again. Restrict access to both the database and the key ring. Follow the ASP.NET Core Data Protection deployment guidance for the hosting environment.
