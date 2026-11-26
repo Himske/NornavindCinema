@@ -21,6 +21,27 @@
   position: relative;
 }
 
+.account-menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.account-menu-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.account-menu-avatar svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
 .cinema-content {
   flex: 1 0 auto;
   padding-top: 1.5rem;
