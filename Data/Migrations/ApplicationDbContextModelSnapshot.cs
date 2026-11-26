@@ -334,6 +334,9 @@ namespace NornavindCinema.Data.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TmdbId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Writer")
                         .HasColumnType("nvarchar(max)");
 

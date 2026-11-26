@@ -22,7 +22,10 @@
 }
 
 <div class="movie-details">
-    <section class="movie-details__hero" aria-labelledby="movie-title">
+    <section class="movie-details__hero @(hasBackdrop ? "movie-details__hero--backdrop" : null)" aria-labelledby="movie-title">
+        @if (hasBackdrop) {
+            <img class="movie-details__hero-backdrop" src="@movie.Backdrop" alt="" />
+        }
         <div class="movie-details__poster">
             @if (hasPoster) {
                 <img src="@movie.Poster" alt="Poster for @movie.Title" />
@@ -138,11 +141,4 @@
             <p>No member reviews yet.</p>
         }
     </section>
-
-    @if (hasBackdrop) {
-        <section class="movie-details__backdrop" aria-labelledby="backdrop-title">
-            <h2 id="backdrop-title">Backdrop</h2>
-            <img src="@movie.Backdrop" alt="Backdrop for @movie.Title" />
-        </section>
-    }
 </div>

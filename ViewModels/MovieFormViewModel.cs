@@ -30,6 +30,11 @@ namespace NornavindCinema.ViewModels {
         public string? ImdbRating { get; set; }
         public string? ImdbVotes { get; set; }
         public string? ImdbId { get; set; }
+
+        [Display(Name = "TMDB ID")]
+        [Range(1, int.MaxValue)]
+        public int? TmdbId { get; set; }
+
         public string? BoxOffice { get; set; }
         public string? Production { get; set; }
 
@@ -69,6 +74,7 @@ namespace NornavindCinema.ViewModels {
             movie.ImdbRating = ImdbRating;
             movie.ImdbVotes = ImdbVotes;
             movie.ImdbId = ImdbId;
+            movie.TmdbId = TmdbId;
             movie.BoxOffice = BoxOffice;
             movie.Production = Production;
         }
@@ -95,6 +101,7 @@ namespace NornavindCinema.ViewModels {
             ImdbRating = movie.ImdbRating,
             ImdbVotes = movie.ImdbVotes,
             ImdbId = movie.ImdbId,
+            TmdbId = movie.TmdbId,
             BoxOffice = movie.BoxOffice,
             Production = movie.Production
         };

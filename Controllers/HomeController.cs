@@ -47,20 +47,22 @@ namespace NornavindCinema.Controllers {
                     Year = Usable(m.Year),
                     Genres = m.Genres ?? []
                 },
+                HasBackdrop = Usable(m.Backdrop) is not null,
                 Rating = ParseDouble(m.ImdbRating),
                 Votes = ParseVotes(m.ImdbVotes),
                 m.Released
-            }).Where(x => x.Card.Poster is not null).ToList();
+            }).ToList();
+            var posterItems = items.Where(x => x.Card.Poster is not null).ToList();
 
             var model = new HomeViewModel {
-                Hero = items.Where(x => x.Card.Plot is not null)
-                    .OrderByDescending(x => x.Rating).ThenByDescending(x => x.Votes)
+                Hero = items.Where(x => x.Card.Plot is not null && x.Card.Backdrop is not null)
+                    .OrderByDescending(x => x.HasBackdrop).ThenByDescending(x => x.Rating).ThenByDescending(x => x.Votes)
                     .Take(HeroCount).Select(x => x.Card).ToList(),
-                Popular = items.OrderByDescending(x => x.Votes).Take(RowSize).Select(x => x.Card).ToList(),
-                Premieres = items.Where(x => x.Released.HasValue)
+                Popular = posterItems.OrderByDescending(x => x.Votes).Take(RowSize).Select(x => x.Card).ToList(),
+                Premieres = posterItems.Where(x => x.Released.HasValue)
                     .OrderByDescending(x => x.Released).Take(RowSize).Select(x => x.Card).ToList(),
-                RecentlyAdded = items.OrderByDescending(x => x.Card.Id).Take(RowSize).Select(x => x.Card).ToList(),
-                Genres = items.SelectMany(x => x.Card.Genres)
+                RecentlyAdded = posterItems.OrderByDescending(x => x.Card.Id).Take(RowSize).Select(x => x.Card).ToList(),
+                Genres = posterItems.SelectMany(x => x.Card.Genres)
                     .GroupBy(g => g, StringComparer.OrdinalIgnoreCase)
                     .OrderByDescending(g => g.Count()).Take(12)
                     .Select(g => g.Key).OrderBy(g => g).ToList()

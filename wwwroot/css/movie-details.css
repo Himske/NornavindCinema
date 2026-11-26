@@ -13,11 +13,41 @@
 }
 
 .movie-details__hero {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(180px, 300px) minmax(0, 1fr);
   gap: 2.75rem;
   align-items: start;
   margin-bottom: 2rem;
+}
+
+.movie-details__hero--backdrop {
+  isolation: isolate;
+  overflow: hidden;
+  padding: 2rem;
+  border-radius: 0.6rem;
+  background: #18181e;
+}
+
+.movie-details__hero-backdrop,
+.movie-details__hero--backdrop::before {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.movie-details__hero-backdrop {
+  z-index: -2;
+  object-fit: cover;
+  object-position: center;
+}
+
+.movie-details__hero--backdrop::before {
+  z-index: -1;
+  content: "";
+  background: linear-gradient(90deg, rgba(10, 10, 14, 0.92), rgba(10, 10, 14, 0.76));
 }
 
 .movie-details__poster {
@@ -173,8 +203,7 @@
   padding: 1.5rem;
 }
 
-.movie-details__ratings h2,
-.movie-details__backdrop h2 {
+.movie-details__ratings h2 {
   margin: 0 0 1rem;
   font-size: 1.1rem;
   font-weight: 700;
@@ -281,18 +310,6 @@
   margin-bottom: 0.75rem;
 }
 
-.movie-details__backdrop {
-  margin-top: 2rem;
-}
-
-.movie-details__backdrop img {
-  display: block;
-  max-width: 100%;
-  max-height: 360px;
-  border-radius: 0.6rem;
-  object-fit: contain;
-}
-
 @media (max-width: 767px) {
   .movie-details {
     padding: 1.5rem 1.25rem 3rem;
@@ -301,6 +318,10 @@
   .movie-details__hero {
     grid-template-columns: minmax(0, 1fr);
     gap: 1.5rem;
+  }
+
+  .movie-details__hero--backdrop {
+    padding: 1.25rem;
   }
 
   .movie-details__poster {

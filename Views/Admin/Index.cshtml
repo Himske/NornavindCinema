@@ -34,6 +34,12 @@
     </div>
 
     <div class="pt-3">
+        <h2 class="h5">Search TMDB</h2>
+        <p>Search TMDB and import individual movies.</p>
+        <a asp-controller="Tmdb" asp-action="Index" class="btn btn-outline-primary">Search TMDB</a>
+    </div>
+
+    <div class="pt-3">
         <h2 class="h5">Seed movie data</h2>
         <p>Import the bundled OMDB movie data. Movies with an IMDb ID already in the database are skipped; existing movies are not changed.</p>
         <form asp-action="SeedMovies" method="post">

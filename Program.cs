@@ -24,6 +24,10 @@ builder.Services.AddHttpClient<OmdbClient>(client => {
     client.BaseAddress = new Uri("https://www.omdbapi.com/");
     client.Timeout = TimeSpan.FromSeconds(15);
 }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false }).RemoveAllLoggers();
+builder.Services.AddHttpClient<TmdbClient>(client => {
+    client.BaseAddress = new Uri("https://api.themoviedb.org/3/");
+    client.Timeout = TimeSpan.FromSeconds(15);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false }).RemoveAllLoggers();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

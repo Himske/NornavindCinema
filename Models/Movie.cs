@@ -21,6 +21,7 @@ namespace NornavindCinema.Models {
         public string? ImdbRating { get; set; }
         public string? ImdbVotes { get; set; }
         public string? ImdbId { get; set; }
+        public int? TmdbId { get; set; }
         public string? BoxOffice { get; set; }
         public string? Production { get; set; }
     }

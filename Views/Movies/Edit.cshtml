@@ -10,6 +10,11 @@
     <div class="col-lg-8">
         <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
             <partial name="_MovieForm" model="Model" />
+            <div class="mb-3">
+                <label asp-for="TmdbId" class="form-label"></label>
+                <input asp-for="TmdbId" class="form-control" />
+                <span asp-validation-for="TmdbId" class="text-danger"></span>
+            </div>
             <button type="submit" class="btn btn-primary">Save</button>
             <a asp-action="Index" class="btn btn-secondary">Cancel</a>
         </form>
