@@ -136,6 +136,7 @@ namespace NornavindCinema.Controllers {
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, MovieFormViewModel form) {
+            form.Id = id;
             if (!ModelState.IsValid) {
                 return View(form);
             }
@@ -147,7 +148,7 @@ namespace NornavindCinema.Controllers {
 
             form.ApplyTo(movie);
             await context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id });
         }
 
         [Authorize(Policy = "Administrator")]
