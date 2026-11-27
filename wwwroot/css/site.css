@@ -242,6 +242,12 @@ body {
   font-size: 0.72rem;
 }
 
+.movie-actions__icon {
+  width: 0.9em;
+  height: 0.9em;
+  vertical-align: -0.1em;
+}
+
 .movie-empty {
   padding: 2rem !important;
   color: #687386;
@@ -251,6 +257,7 @@ body {
 .movie-table-footer {
   min-height: 3rem;
   gap: 1rem;
+  flex-wrap: wrap;
   color: #697487;
   font-size: 0.78rem;
 }

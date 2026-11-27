@@ -51,7 +51,7 @@
                     </form>
                 }
                 @if (isAdministrator) {
-                    <a asp-action="Edit" asp-route-id="@movie.Id" class="movie-details__button movie-details__button--primary">Edit movie</a>
+                    <a asp-action="Edit" asp-route-id="@movie.Id" class="movie-details__button movie-details__button--edit">Edit movie</a>
                 }
                 <a asp-action="Index" class="movie-details__button movie-details__button--secondary">Back to movies</a>
             </div>

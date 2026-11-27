@@ -135,6 +135,15 @@
   background: #f6121d;
 }
 
+.movie-details__button--edit {
+  background: #0d6efd;
+}
+
+.movie-details__button--edit:hover {
+  color: #fff;
+  background: #0b5ed7;
+}
+
 .movie-details__button--secondary {
   border-color: #44444d;
   background: #24242b;

@@ -6,14 +6,17 @@
     const pageInfo = document.getElementById("movie-page-info");
     const pageNumber = document.getElementById("movie-page-number");
     const emptyMessage = document.getElementById("movie-empty");
+    const first = document.getElementById("movie-first");
     const previous = document.getElementById("movie-previous");
     const next = document.getElementById("movie-next");
+    const last = document.getElementById("movie-last");
     const refresh = document.getElementById("movie-refresh");
     const stateWarning = document.getElementById("movie-state-warning");
 
     if (!(search instanceof HTMLInputElement) || !(genre instanceof HTMLSelectElement)
         || !count || !pageInfo || !pageNumber || !emptyMessage || !stateWarning
-        || !(previous instanceof HTMLButtonElement) || !(next instanceof HTMLButtonElement) || !refresh) {
+        || !(first instanceof HTMLButtonElement) || !(previous instanceof HTMLButtonElement)
+        || !(next instanceof HTMLButtonElement) || !(last instanceof HTMLButtonElement) || !refresh) {
         throw new Error("Movie list controls are missing or invalid.");
     }
 
@@ -85,15 +88,17 @@
         count.textContent = `Showing ${filteredRows.length ? start + 1 : 0} to ${Math.min(start + pageSize, filteredRows.length)} of ${filteredRows.length} movies`;
         pageInfo.textContent = `Showing ${filteredRows.length ? start + 1 : 0} to ${Math.min(start + pageSize, filteredRows.length)} of ${filteredRows.length} entries`;
         pageNumber.textContent = String(currentPage);
-        previous.disabled = currentPage <= 1;
-        next.disabled = currentPage >= pageCount;
+        first.disabled = previous.disabled = currentPage <= 1;
+        last.disabled = next.disabled = currentPage >= pageCount;
         saveState();
     };
 
     search.addEventListener("input", () => { currentPage = 1; render(); });
     genre.addEventListener("change", () => { currentPage = 1; render(); });
+    first.addEventListener("click", () => { currentPage = 1; render(); });
     previous.addEventListener("click", () => { currentPage--; render(); });
     next.addEventListener("click", () => { currentPage++; render(); });
+    last.addEventListener("click", () => { currentPage = Math.max(1, Math.ceil(filteredRows.length / pageSize)); render(); });
     refresh.addEventListener("click", () => {
         search.value = "";
         genre.value = "";
