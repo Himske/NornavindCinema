@@ -49,6 +49,7 @@
                         <input type="hidden" name="isFavorite" value="@(!Model.IsFavorite ? "true" : "false")" />
                         <button class="movie-details__button movie-details__button--primary" type="submit">@(Model.IsFavorite ? "Remove from favorites" : "Add to favorites")</button>
                     </form>
+                    <button class="movie-details__button movie-details__button--primary" type="button" data-bs-toggle="modal" data-bs-target="#review-modal">@(Model.HasOwnReview ? "Edit your review" : "Write a review")</button>
                 }
                 @if (isAdministrator) {
                     <a asp-action="Edit" asp-route-id="@movie.Id" class="movie-details__button movie-details__button--edit">Edit movie</a>
@@ -58,22 +59,52 @@
         </div>
     </section>
 
+    @if (TempData["ReviewSaved"] is string message) {
+        <p class="alert alert-success" role="status">@message</p>
+    }
     <div class="movie-details__panels">
-        <section class="movie-details__panel" aria-labelledby="overview-title">
-            <h2 id="overview-title" class="movie-details__panel-heading">Overview</h2>
-            <dl class="movie-details__facts">
-                <div><dt>Director</dt><dd>@Display(movie.Director)</dd></div>
-                <div><dt>Writers</dt><dd>@Display(movie.Writer)</dd></div>
-                <div><dt>Stars</dt><dd>@actors</dd></div>
-                <div><dt>Release date</dt><dd>@(movie.Released?.ToString("D") ?? "N/A")</dd></div>
-                <div><dt>Language</dt><dd>@Display(movie.Language)</dd></div>
-                <div><dt>Box office</dt><dd>@Display(movie.BoxOffice)</dd></div>
-                <div><dt>Rated</dt><dd>@Display(movie.Rated)</dd></div>
-                <div><dt>Country</dt><dd>@Display(movie.Country)</dd></div>
-                <div><dt>Awards</dt><dd>@Display(movie.Awards)</dd></div>
-                <div><dt>Production</dt><dd>@Display(movie.Production)</dd></div>
-                <div><dt>Metascore</dt><dd>@Display(movie.Metascore)</dd></div>
-            </dl>
+        <section class="movie-details__panel">
+            <div class="movie-details__tabs" role="tablist" aria-label="Movie information">
+                <button class="movie-details__tab active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-panel" type="button" role="tab" aria-controls="overview-panel" aria-selected="true">Overview</button>
+                <button class="movie-details__tab" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews-panel" type="button" role="tab" aria-controls="reviews-panel" aria-selected="false">Member reviews</button>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="overview-panel" role="tabpanel" aria-labelledby="overview-tab" tabindex="0">
+                    <dl class="movie-details__facts">
+                        <div><dt>Director</dt><dd>@Display(movie.Director)</dd></div>
+                        <div><dt>Writers</dt><dd>@Display(movie.Writer)</dd></div>
+                        <div><dt>Stars</dt><dd>@actors</dd></div>
+                        <div><dt>Release date</dt><dd>@(movie.Released?.ToString("D") ?? "N/A")</dd></div>
+                        <div><dt>Language</dt><dd>@Display(movie.Language)</dd></div>
+                        <div><dt>Box office</dt><dd>@Display(movie.BoxOffice)</dd></div>
+                        <div><dt>Rated</dt><dd>@Display(movie.Rated)</dd></div>
+                        <div><dt>Country</dt><dd>@Display(movie.Country)</dd></div>
+                        <div><dt>Awards</dt><dd>@Display(movie.Awards)</dd></div>
+                        <div><dt>Production</dt><dd>@Display(movie.Production)</dd></div>
+                        <div><dt>Metascore</dt><dd>@Display(movie.Metascore)</dd></div>
+                    </dl>
+                </div>
+                <div class="tab-pane fade movie-details__reviews" id="reviews-panel" role="tabpanel" aria-labelledby="reviews-tab" tabindex="0">
+                    @if (!isMember && !(User.Identity?.IsAuthenticated ?? false)) {
+                        <p><a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Details", "Movies", new { id = movie.Id })">Log in</a> to add favorites, reviews and ratings.</p>
+                    }
+                    else if (!isMember) {
+                        <p>A Member or Admin role is required to add favorites, reviews and ratings.</p>
+                    }
+                    @if (Model.Reviews.Any(review => !string.IsNullOrWhiteSpace(review.Review))) {
+                        @foreach (var review in Model.Reviews.Where(review => !string.IsNullOrWhiteSpace(review.Review))) {
+                            <article class="movie-details__review">
+                                <strong>Member review</strong>
+                                @if (review.Rating.HasValue) { <span> · @review.Rating / 10</span> }
+                                <p>@review.Review</p>
+                            </article>
+                        }
+                    }
+                    else {
+                        <p>No member reviews yet.</p>
+                    }
+                </div>
+            </div>
         </section>
 
         <aside class="movie-details__panel movie-details__ratings" aria-labelledby="ratings-title">
@@ -96,49 +127,40 @@
         </aside>
     </div>
 
-    <section class="movie-details__panel movie-details__reviews" aria-labelledby="reviews-title">
-        <h2 id="reviews-title">Member reviews</h2>
-        @if (TempData["ReviewSaved"] is string message) {
-            <p role="status">@message</p>
-        }
-        @if (isMember) {
-            <form asp-action="Review" asp-route-id="@movie.Id" method="post" class="movie-details__review-form">
-                <h3>Your review and rating</h3>
-                @if (Model.OwnReviewIsHidden) {
-                    <p>Your review and rating are hidden by a moderator. Edits remain hidden until restored.</p>
-                }
-                <div asp-validation-summary="ModelOnly" class="movie-details__error" role="alert"></div>
-                <label asp-for="Feedback.Rating">Your rating (1–10, optional)</label>
-                <select asp-for="Feedback.Rating">
-                    <option value="">No rating</option>
-                    @for (var score = 1; score <= 10; score++) {
-                        <option value="@score">@score</option>
-                    }
-                </select>
-                <span asp-validation-for="Feedback.Rating" class="movie-details__error"></span>
-                <label asp-for="Feedback.Review">Your review (optional)</label>
-                <textarea asp-for="Feedback.Review" rows="4" maxlength="2000"></textarea>
-                <span asp-validation-for="Feedback.Review" class="movie-details__error"></span>
-                <button type="submit" class="movie-details__button movie-details__button--primary">Save review and rating</button>
-            </form>
-        }
-        else if (!(User.Identity?.IsAuthenticated ?? false)) {
-            <p><a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Details", "Movies", new { id = movie.Id })">Log in</a> to add favorites, reviews and ratings.</p>
-        }
-        else {
-            <p>A Member or Admin role is required to add favorites, reviews and ratings.</p>
-        }
-        @if (Model.Reviews.Any(review => !string.IsNullOrWhiteSpace(review.Review))) {
-            @foreach (var review in Model.Reviews.Where(review => !string.IsNullOrWhiteSpace(review.Review))) {
-                <article class="movie-details__review">
-                    <strong>Member review</strong>
-                    @if (review.Rating.HasValue) { <span> · @review.Rating / 10</span> }
-                    <p>@review.Review</p>
-                </article>
-            }
-        }
-        else {
-            <p>No member reviews yet.</p>
-        }
-    </section>
+    @if (isMember) {
+        <div class="modal fade" id="review-modal" tabindex="-1" aria-labelledby="review-modal-title" aria-hidden="true" data-open-on-load="@(Model.OpenReviewModal ? "true" : "false")">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="review-modal-title">Your review and rating</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @if (Model.OwnReviewIsHidden) {
+                            <p>Your review and rating are hidden by a moderator. Edits remain hidden until restored.</p>
+                        }
+                        <form asp-action="Review" asp-route-id="@movie.Id" method="post" class="movie-details__review-form">
+                            <div asp-validation-summary="ModelOnly" class="movie-details__error" role="alert"></div>
+                            <label asp-for="Feedback.Rating">Your rating (1–10, optional)</label>
+                            <select asp-for="Feedback.Rating">
+                                <option value="">No rating</option>
+                                @for (var score = 1; score <= 10; score++) {
+                                    <option value="@score">@score</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Feedback.Rating" class="movie-details__error"></span>
+                            <label asp-for="Feedback.Review">Your review (optional)</label>
+                            <textarea asp-for="Feedback.Review" rows="4" maxlength="2000"></textarea>
+                            <span asp-validation-for="Feedback.Review" class="movie-details__error"></span>
+                            <button type="submit" class="movie-details__button movie-details__button--primary">Save review and rating</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
+
+@section Scripts {
+    <script src="~/js/movie-details.js" asp-append-version="true"></script>
+}

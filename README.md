@@ -18,7 +18,7 @@ Administrators can use **Moderate reviews** to hide or restore a member's review
 
 ## Member favorites and reviews
 
-Signed-in Members and Admins can add or remove favorites and save one review and an optional 1–10 rating per movie on its details page. A review or a rating can be saved on its own and edited later. Member reviews are publicly visible without displaying account names. The account menu links to **My favorites**. Favorites and reviews are stored per account in the database; the earlier browser-only home-page list is not imported automatically.
+Signed-in Members and Admins can add or remove favorites and save one review and an optional 1–10 rating per movie on its details page. Use **Write a review** to open the form or **Edit your review** to change the existing submission. A review or a rating can be saved on its own and edited later. Member reviews appear in the **Member reviews** tab and are publicly visible without displaying account names. The account menu links to **My favorites**. Favorites and reviews are stored per account in the database; the earlier browser-only home-page list is not imported automatically.
 
 ## API credentials
 

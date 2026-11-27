@@ -71,6 +71,7 @@ namespace NornavindCinema.Controllers {
 
             if (!ModelState.IsValid) {
                 model.Feedback = feedback;
+                model.OpenReviewModal = true;
                 return View("Details", model);
             }
 
@@ -98,6 +99,7 @@ namespace NornavindCinema.Controllers {
             return new MovieDetailsViewModel {
                 Movie = movie,
                 Reviews = reviews,
+                HasOwnReview = own is not null,
                 OwnReviewIsHidden = own?.IsHidden ?? false,
                 IsFavorite = userId is not null && await context.MovieFavorites.AsNoTracking().AnyAsync(favorite => favorite.UserId == userId && favorite.MovieId == id),
                 Feedback = new MovieReviewInput { Rating = own?.Rating, Review = own?.Review }
