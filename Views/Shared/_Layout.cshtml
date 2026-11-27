@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@{
     var cinema = ViewData["Cinema"] is true;
     var isHome = string.IsNullOrEmpty(ViewContext.RouteData.Values["area"]?.ToString())
         && string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Home", StringComparison.OrdinalIgnoreCase)
@@ -35,6 +37,11 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Movies" asp-action="Index">Movies</a>
                         </li>
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "Administrator")).Succeeded) {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Index">Dashboard</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

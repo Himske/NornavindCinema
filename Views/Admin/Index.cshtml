@@ -1,49 +1,104 @@
+@model NornavindCinema.ViewModels.AdminDashboardViewModel
 @{
-    ViewData["Title"] = "Administration";
+    ViewData["Title"] = "Admin dashboard";
+    var maxGenreCount = Model.TopGenres.FirstOrDefault()?.Count ?? 0;
 }
 
-<section class="movie-management">
-    <div class="movie-management__header">
-        <div>
-            <h1>Administration</h1>
-            <p>Manage application data.</p>
-        </div>
-    </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+}
+
+<section class="admin-dashboard">
+    <header class="admin-dashboard__header">
+        <h1>Admin dashboard</h1>
+        <p>Overview of your Nornavind Cinema platform.</p>
+    </header>
 
     @if (TempData["SeedResult"] is string message) {
-        <div class="alert alert-success mt-3" role="status">@message</div>
+        <div class="alert alert-success" role="status">@message</div>
     }
 
-    <div class="pt-3">
-        <h2 class="h5">Users and reviews</h2>
-        <p>Manage user roles and accounts, or moderate member reviews.</p>
-        <a asp-controller="AdminUsers" asp-action="Index" class="btn btn-outline-primary">Manage users</a>
-        <a asp-controller="AdminReviews" asp-action="Index" class="btn btn-outline-primary">Moderate reviews</a>
+    <div class="admin-dashboard__stats">
+        <article class="admin-dashboard__stat">
+            <span class="admin-dashboard__icon admin-dashboard__icon--blue" aria-hidden="true">&#127916;</span>
+            <div><h2>Total movies</h2><p>@Model.MovieCount.ToString("N0")</p></div>
+        </article>
+        <article class="admin-dashboard__stat">
+            <span class="admin-dashboard__icon admin-dashboard__icon--green" aria-hidden="true">&#128101;</span>
+            <div><h2>Total users</h2><p>@Model.UserCount.ToString("N0")</p></div>
+        </article>
+        <article class="admin-dashboard__stat">
+            <span class="admin-dashboard__icon admin-dashboard__icon--gold" aria-hidden="true">&#128172;</span>
+            <div><h2>Visible reviews</h2><p>@Model.ReviewCount.ToString("N0")</p></div>
+        </article>
+        <article class="admin-dashboard__stat">
+            <span class="admin-dashboard__icon admin-dashboard__icon--purple" aria-hidden="true">&#9733;</span>
+            <div>
+                <h2>Top rated movie</h2>
+                @if (Model.TopRated is { } top) {
+                    <p class="admin-dashboard__top-title"><a asp-controller="Movies" asp-action="Details" asp-route-id="@top.MovieId">@(top.Title ?? "Untitled movie")</a></p>
+                    <small><span class="admin-dashboard__star" aria-hidden="true">&#9733;</span> @top.AverageRating.ToString("0.0") / 10 (@top.RatingCount ratings)</small>
+                }
+                else {
+                    <p class="admin-dashboard__empty">No member ratings yet</p>
+                }
+            </div>
+        </article>
     </div>
 
-    <div class="pt-3">
-        <h2 class="h5">API configuration</h2>
-        <p>Manage the OMDB and TMDB credentials.</p>
-        <a asp-controller="ApiConfiguration" asp-action="Index" class="btn btn-outline-primary">Configure APIs</a>
+    <div class="admin-dashboard__grid">
+        <section class="admin-dashboard__panel">
+            <h2>Platform activity</h2>
+            <div class="admin-dashboard__activity-empty">
+                <p>Activity history is not available yet.</p>
+                <p>Movie, account and review activity timestamps are not currently recorded.</p>
+            </div>
+        </section>
+        <section class="admin-dashboard__panel">
+            <h2>Top genres</h2>
+            @if (Model.TopGenres.Count == 0) {
+                <p class="admin-dashboard__muted">No genres available yet.</p>
+            }
+            else {
+                <ul class="admin-dashboard__genres">
+                    @foreach (var genre in Model.TopGenres) {
+                        <li>
+                            <div class="admin-dashboard__genre-label"><span>@genre.Name</span><span>@genre.Count</span></div>
+                            <progress class="admin-dashboard__bar" value="@genre.Count" max="@maxGenreCount" aria-label="@genre.Name: @genre.Count movies"></progress>
+                        </li>
+                    }
+                </ul>
+            }
+            <a asp-controller="Movies" asp-action="Index" class="btn btn-outline-primary btn-sm">Browse movies</a>
+        </section>
     </div>
 
-    <div class="pt-3">
-        <h2 class="h5">Search OMDB</h2>
-        <p>Search OMDB and import individual movies.</p>
-        <a asp-controller="Omdb" asp-action="Index" class="btn btn-outline-primary">Search OMDB</a>
-    </div>
+    <section class="admin-dashboard__panel admin-dashboard__recent">
+        <h2>Recently added movies</h2>
+        @if (Model.RecentMovies.Count == 0) {
+            <p class="admin-dashboard__muted">No movies have been added yet.</p>
+        }
+        else {
+            <ul>
+                @foreach (var movie in Model.RecentMovies) {
+                    <li><span class="admin-dashboard__recent-icon" aria-hidden="true">&#9654;</span><a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id">@(movie.Title ?? "Untitled movie")</a></li>
+                }
+            </ul>
+        }
+    </section>
 
-    <div class="pt-3">
-        <h2 class="h5">Search TMDB</h2>
-        <p>Search TMDB and import individual movies.</p>
-        <a asp-controller="Tmdb" asp-action="Index" class="btn btn-outline-primary">Search TMDB</a>
-    </div>
-
-    <div class="pt-3">
-        <h2 class="h5">Seed movie data</h2>
-        <p>Import the bundled OMDB movie data. Movies with an IMDb ID already in the database are skipped; existing movies are not changed.</p>
+    <section class="admin-dashboard__panel admin-dashboard__tools">
+        <h2>Administration</h2>
+        <div class="admin-dashboard__links">
+            <a asp-controller="AdminUsers" asp-action="Index" class="btn btn-outline-primary">Manage users</a>
+            <a asp-controller="AdminReviews" asp-action="Index" class="btn btn-outline-primary">Moderate reviews</a>
+            <a asp-controller="ApiConfiguration" asp-action="Index" class="btn btn-outline-primary">Configure APIs</a>
+            <a asp-controller="Omdb" asp-action="Index" class="btn btn-outline-primary">Search OMDB</a>
+            <a asp-controller="Tmdb" asp-action="Index" class="btn btn-outline-primary">Search TMDB</a>
+        </div>
+        <p>Import bundled OMDB data without changing existing movies.</p>
         <form asp-action="SeedMovies" method="post">
             <button type="submit" class="btn btn-primary">Seed movies</button>
         </form>
-    </div>
+    </section>
 </section>

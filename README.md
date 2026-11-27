@@ -10,7 +10,9 @@ The Administration page imports the bundled `Data/omdb_responses.json` file. It 
 
 The Administration page is restricted to users assigned the `Admin` Identity role. Register and confirm an account, then have a trusted database administrator assign that account to the existing `Admin` role through ASP.NET Core Identity's `UserManager<ApplicationUser>.AddToRoleAsync(user, "Admin")` or a controlled database administration process. After a role assignment, sign out and back in to refresh the authentication cookie. Existing `Admin:UserId` configuration no longer grants access; the previously configured user must also be assigned the role. Role changes to existing cookies take effect when the security stamp is validated or the user signs in again.
 
-Open the account dropdown, select **Administration**, and submit **Seed movies**. Import runs as a single database transaction; errors are not reported as success. The result shows the number added and skipped. The seed data file is included in published output and must remain in the `Data` directory under the application's content root.
+Administrators can open **Dashboard** in the navbar or **Administration** in the account dropdown. The dashboard shows movie and user totals, visible written reviews, the highest average visible member rating, top genres, and the most recently inserted movies. Historical activity and trends are unavailable because timestamps are not recorded.
+
+From the dashboard, submit **Seed movies**. Import runs as a single database transaction; errors are not reported as success. The result shows the number added and skipped. The seed data file is included in published output and must remain in the `Data` directory under the application's content root.
 
 Administrators can use **Manage users** to add or remove Guest, Member and Admin roles and permanently delete accounts. Deleting an account also deletes its favorites, reviews and ratings. Administrators cannot remove their own Admin role or delete their own account, and the last administrator cannot be removed. Role changes invalidate existing sessions on the next request.
 
