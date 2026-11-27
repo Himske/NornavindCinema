@@ -96,9 +96,13 @@
             <a asp-controller="Omdb" asp-action="Index" class="btn btn-outline-primary">Search OMDB</a>
             <a asp-controller="Tmdb" asp-action="Index" class="btn btn-outline-primary">Search TMDB</a>
         </div>
-        <p>Import bundled OMDB data without changing existing movies.</p>
+        <p>Import the configured movie seed without changing existing movies.</p>
         <form asp-action="SeedMovies" method="post">
             <button type="submit" class="btn btn-primary">Seed movies</button>
+        </form>
+        <p class="mt-3">Download a seed file containing the current movie catalog.</p>
+        <form asp-action="GenerateMovieSeed" method="post">
+            <button type="submit" class="btn btn-outline-primary">Generate movie seed file</button>
         </form>
     </section>
 </section>

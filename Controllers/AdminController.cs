@@ -39,5 +39,13 @@ namespace NornavindCinema.Controllers {
             TempData["SeedResult"] = $"Added {result.Added} movies; skipped {result.Skipped} already present or duplicate entries.";
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<IActionResult> GenerateMovieSeed(CancellationToken cancellationToken) {
+            var content = await movieSeeder.GenerateSeedAsync(cancellationToken);
+            return File(content, "application/json", "movie_seed.json");
+        }
     }
 }
